@@ -1,0 +1,86 @@
+BEGIN;
+
+DROP TABLE IF EXISTS "user" CASCADE;
+
+DROP TABLE IF EXISTS "project" CASCADE;
+
+DROP TABLE IF EXISTS "techno" CASCADE;
+
+DROP TABLE IF EXISTS "project_techno" CASCADE;
+
+DROP TABLE IF EXISTS "user_techno" CASCADE;
+
+DROP TABLE IF EXISTS "conversation" CASCADE;
+
+DROP TABLE IF EXISTS "message" CASCADE;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE "user" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "email" TEXT NOT NULL UNIQUE,
+    "password" TEXT NOT NULL,
+    "pseudo" TEXT NOT NULL,
+    "type" TEXT,
+    "description" TEXT,
+    "image" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "project" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "rhythm" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "techno" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+-- Tables de liaison
+CREATE TABLE "user_techno" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "techno_id" INTEGER NOT NULL REFERENCES "techno" ("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "project_techno" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "project_id" INTEGER NOT NULL REFERENCES "project" ("id") ON DELETE CASCADE,
+    "techno_id" INTEGER NOT NULL REFERENCES "techno" ("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "conversation" (
+    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "title" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "user_id1" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id2" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+CREATE TABLE "message" (
+    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "content" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "conversation_id" UUID REFERENCES conversation(id) ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ
+);
+
+COMMIT;
