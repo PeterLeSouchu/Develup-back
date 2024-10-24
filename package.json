@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:create": "psql -p 5432 -U develup -d develup -f ./database/script/create_tables.sql",
-    "db:seeding": "node ./database/script/seeding_tables.js"
+    "db:create": "psql -p 5432 -U develup -d develup -f ./database/scripts/create_tables.sql",
+    "db:seeding": "node ./database/scripts/seeding_tables.js"
   },
   "keywords": [],
   "author": "",
