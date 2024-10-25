@@ -1,9 +1,11 @@
 {
   "name": "develupp",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./app/app.js",
     "db:create": "psql -p 5432 -U develup -d develup -f ./database/scripts/create_tables.sql",
     "db:seeding": "node ./database/scripts/seeding_tables.js"
   },
@@ -12,7 +14,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "argon2": "^0.41.1",
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "ioredis": "^5.4.1",
+    "nodemailer": "^6.9.15",
+    "otp-generator": "^4.0.1",
     "pg": "^8.13.0"
   }
 }

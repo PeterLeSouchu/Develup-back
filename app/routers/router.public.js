@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import authController from '../controllers/public-controllers/auth-controller.js';
 const publicRouter = Router();
 
-publicRouter.get('/api/login');
+publicRouter.post('/api/login', authController.sendOTP);
 
 export default publicRouter;
