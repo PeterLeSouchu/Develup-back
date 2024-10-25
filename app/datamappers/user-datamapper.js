@@ -1,6 +1,6 @@
-import client from '../database/pg.client';
+import client from '../database/pg.client.js';
 
-const authDatamapper = {
+const userDatamapper = {
   async check(email) {
     const response = await client.query(
       `
@@ -12,3 +12,5 @@ const authDatamapper = {
     return response.rows[0];
   },
 };
+
+export default userDatamapper;
