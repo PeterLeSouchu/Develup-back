@@ -21,6 +21,9 @@ const authController = {
 
       const passwordHashed = hashPassword(password);
 
+      const OTP = otpGenerator.generate(6);
+      console.log(OTP);
+
       const userData = {
         email,
         pseudo,
@@ -30,14 +33,15 @@ const authController = {
 
       await redis.set(`otp:${email}`, JSON.stringify(userData), 'EX', 600);
 
-      const OTP = otpGenerator.generate(6);
-      console.log(OTP);
-
       await sendMail(email, pseudo, OTP);
+      res.status(200).json({ info: 'OTP sented', OTP: OTP });
     } catch (error) {
       console.error(error);
       return res.status(404).json({ message: error.message });
     }
+  },
+  test(req, res) {
+    res.json({ infos: 'test ok' });
   },
 };
 
