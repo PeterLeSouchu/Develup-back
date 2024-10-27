@@ -8,8 +8,8 @@ import userDatamapper from '../../datamappers/user-datamapper.js';
 import { redis } from '../../utils/redis.js';
 import jwt from 'jsonwebtoken';
 
-const authController = {
-  async sendOTP(req, res, next) {
+const signupController = {
+  async sendOTP(req, res) {
     try {
       const { email, pseudo, password, passwordConfirm } = req.body;
 
@@ -60,7 +60,7 @@ const authController = {
     try {
       const { userOTPcode } = req.body;
 
-      const token = req.cookies.jwt; // Récupère le token depuis les cookies
+      const token = req.cookies.jwt;
 
       if (!token) {
         return res.sendStatus(401);
@@ -68,7 +68,7 @@ const authController = {
 
       const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-      const { email, pseudo, password, passwordConfirm, OTPcode } =
+      const { email, pseudo, passwordHashed, OTPcode } =
         JSON.parse(await redis.get(`otp:${id}`)) || {};
 
       if (!OTPcode) {
@@ -85,10 +85,29 @@ const authController = {
         throw new Error('Les codes ne  sont pas identiques');
       }
 
-      // const createdUser = await userDatamapper.save(email, password, pseudo);
-      // delete createdUser.password;
+      const createdUser = await userDatamapper.save(
+        email,
+        passwordHashed,
+        pseudo
+      );
+      delete createdUser.password;
 
-      await redis.del(`otp:${email}`);
+      const userToken = jwt.sign(
+        { id: createdUser.id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      res.cookie('jwt', userToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'Lax',
+        maxAge: 3600000, // 1 heure
+      });
+
+      await redis.del(`otp:${id}`);
 
       console.log(
         `Tout s'est bien passé et voici les info recuperer via redis ${email}|| ${pseudo} `
@@ -99,4 +118,4 @@ const authController = {
   },
 };
 
-export default authController;
+export default signupController;
