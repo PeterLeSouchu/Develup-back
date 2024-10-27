@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import authController from '../controllers/public-controllers/auth-controller.js';
+import signupController from '../controllers/public-controllers/signup-controller.js';
 const publicRouter = Router();
 
-publicRouter.post('/api/signup/otp', authController.sendOTP);
-publicRouter.post('/api/signup/register', authController.registerUser);
+publicRouter.post('/api/signup/otp', signupController.sendOTP);
+publicRouter.post('/api/signup/register', signupController.registerUser);
 
 export default publicRouter;
