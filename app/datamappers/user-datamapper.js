@@ -1,7 +1,7 @@
 import client from '../database/pg.client.js';
 
 const userDatamapper = {
-  async check(email) {
+  async checkByEmail(email) {
     const response = await client.query(
       `
             SELECT * FROM "user" 
