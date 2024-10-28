@@ -19,7 +19,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Router
 app.use(router);
 
 app.listen(process.env.PORT, () => {

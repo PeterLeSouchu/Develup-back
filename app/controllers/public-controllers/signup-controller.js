@@ -15,7 +15,7 @@ const signupController = {
 
       const id = uuidv4();
 
-      const userExist = await userController.check(email);
+      const userExist = await userController.checkByEmail(email);
 
       if (userExist) {
         throw new Error('Utilisateur déja inscrit');
@@ -41,7 +41,16 @@ const signupController = {
         expiresIn: '15m',
       });
 
-      await sendMail(email, pseudo, OTPcode);
+      const subject = 'OTC Code';
+
+      const mailMessage = `<h1> Develup </h1>
+      <p>Bonjour ${pseudo},</p>
+      <p>Nous vous souhaitons la bienvenue sur Develup! </p>
+      <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span> ${OTPcode}</span></p>
+      <p>Merci à vous et bonne visite!</p>
+    `;
+
+      await sendMail(email, subject, mailMessage);
 
       res.cookie('jwt', token, {
         httpOnly: true,

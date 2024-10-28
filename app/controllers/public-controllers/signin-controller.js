@@ -1,13 +1,13 @@
 import 'dotenv/config';
-import userDatamapper from '../../datamappers/user-datamapper';
-import { verifyPassword } from '../../utils/hash';
+import userDatamapper from '../../datamappers/user-datamapper.js';
+import { verifyPassword } from '../../utils/hash.js';
 import jwt from 'jsonwebtoken';
 
 const signinController = {
   async login(req, res) {
     try {
       const { email, password } = req.body;
-      const userExist = await userDatamapper.check(email);
+      const userExist = await userDatamapper.checkByEmail(email);
       if (!userExist) {
         throw new Error('Identifiant incorrect');
       }
