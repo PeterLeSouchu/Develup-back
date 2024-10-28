@@ -25,9 +25,7 @@ const forgotPasswordController = {
 
       const mailMessage = `<h1> Develup </h1>
        <p>Bonjour,</p>
-       <p>Suite à  votre demande de réinitialisation de mot de passe, voici votre lien pour générer un nouveau mot de passe </p>
-       <p>Lien : ${link} </p>
-       <p>Pensez à bien noter votre nouveau mot de passe quelque part !</p>
+       <p>Suite à  votre demande de réinitialisation de mot de passe, <a href=${link}>cliquez ici<a/> pour générer un nouveau mot de passe </p>
        <p>Merci à vous et bonne visite!</p>
        `;
 

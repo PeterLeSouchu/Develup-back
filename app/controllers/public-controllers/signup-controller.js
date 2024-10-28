@@ -59,6 +59,8 @@ const signupController = {
         maxAge: 900000, // 15min
       });
 
+      console.log('code envoyé');
+
       res.status(200).json({ info: 'OTP sented', token });
     } catch (error) {
       console.error(error);
