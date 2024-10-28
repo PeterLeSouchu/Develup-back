@@ -11,6 +11,16 @@ const userDatamapper = {
     );
     return response.rows[0];
   },
+  async checkById(id) {
+    const response = await client.query(
+      `
+            SELECT * FROM "user" 
+              WHERE "id" = $1
+            ;`,
+      [id]
+    );
+    return response.rows[0];
+  },
   async save(email, password, pseudo) {
     const response = await client.query(
       `
@@ -21,6 +31,16 @@ const userDatamapper = {
       [email, password, pseudo]
     );
     return response.rows[0];
+  },
+  async changePassword(password, id) {
+    const rsponse = await client.query(
+      `UPDATE "user"
+       SET "password" = $1
+       WHERE id = $2
+       RETURNING *;
+`,
+      [password, id]
+    );
   },
 };
 

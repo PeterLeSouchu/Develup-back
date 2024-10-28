@@ -17,8 +17,8 @@ export async function sendMail(email, subject, message) {
       name: 'Develup Team',
       address: 'develup33@gmail.com',
     },
-    to: `${email}`,
-    subject: { subject },
-    html: { message },
+    to: email,
+    subject: subject,
+    html: message,
   });
 }
