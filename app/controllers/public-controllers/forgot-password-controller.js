@@ -2,6 +2,7 @@ import userDatamapper from '../../datamappers/user-datamapper.js';
 import { sendMail } from '../../utils/nodemailer.js';
 import jwt from 'jsonwebtoken';
 import { hashPassword } from '../../utils/hash.js';
+import ApiError from '../../errors/error.js';
 
 const forgotPasswordController = {
   async sendResetLink(req, res) {
