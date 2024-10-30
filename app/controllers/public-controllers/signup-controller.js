@@ -10,122 +10,111 @@ import jwt from 'jsonwebtoken';
 
 const signupController = {
   async sendOTP(req, res) {
-    try {
-      const { email, pseudo, password, passwordConfirm } = req.body;
+    const { email, pseudo, password, passwordConfirm } = req.body;
 
-      const id = uuidv4();
+    const id = uuidv4();
 
-      const userExist = await userController.checkByEmail(email);
+    const userExist = await userController.checkByEmail(email);
 
-      if (userExist) {
-        throw new Error('Utilisateur déja inscrit');
-      }
+    if (userExist) {
+      throw new Error('Utilisateur déja inscrit');
+    }
 
-      if (password !== passwordConfirm) {
-        throw new Error('Les mots de passe ne correspondent pas');
-      }
-      const passwordHashed = await hashPassword(password);
+    if (password !== passwordConfirm) {
+      throw new Error('Les mots de passe ne correspondent pas');
+    }
+    const passwordHashed = await hashPassword(password);
 
-      const OTPcode = otpGenerator.generate(6);
+    const OTPcode = otpGenerator.generate(6);
 
-      const userData = {
-        email,
-        pseudo,
-        passwordHashed,
-        OTPcode,
-      };
+    const userData = {
+      email,
+      pseudo,
+      passwordHashed,
+      OTPcode,
+    };
 
-      await redis.set(`otp:${id}`, JSON.stringify(userData), 'EX', 600);
+    await redis.set(`otp:${id}`, JSON.stringify(userData), 'EX', 600);
 
-      const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '15m',
-      });
+    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+      expiresIn: '15m',
+    });
 
-      const subject = 'OTC Code';
+    const subject = 'OTC Code';
 
-      const mailMessage = `<h1> Develup </h1>
+    const mailMessage = `<h1> Develup </h1>
       <p>Bonjour ${pseudo},</p>
       <p>Nous vous souhaitons la bienvenue sur Develup! </p>
       <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span> ${OTPcode}</span></p>
       <p>Merci à vous et bonne visite!</p>
     `;
 
-      await sendMail(email, subject, mailMessage);
+    await sendMail(email, subject, mailMessage);
 
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'Lax',
-        maxAge: 900000, // 15min
-      });
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      maxAge: 900000, // 15min
+    });
 
-      console.log('code envoyé');
+    console.log('code envoyé');
 
-      res.status(200).json({ info: 'OTP sented', token });
-    } catch (error) {
-      console.error(error);
-      return res.status(404).json({ message: error.message });
-    }
+    res.status(200).json({ info: 'OTP sented', token });
   },
   async registerUser(req, res) {
-    try {
-      const { userOTPcode } = req.body;
+    const { userOTPcode } = req.body;
 
-      const token = req.cookies.jwt;
+    const token = req.cookies.jwt;
 
-      if (!token) {
-        return res.sendStatus(401);
-      }
+    if (!token) {
+      return res.sendStatus(401);
+    }
 
-      const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
-      const { email, pseudo, passwordHashed, OTPcode } =
-        JSON.parse(await redis.get(`otp:${id}`)) || {};
+    const { email, pseudo, passwordHashed, OTPcode } =
+      JSON.parse(await redis.get(`otp:${id}`)) || {};
 
-      if (!OTPcode) {
-        return res
-          .status(400)
-          .json({ message: "Le code OTP a expiré ou n'existe pas." });
-      }
+    if (!OTPcode) {
+      return res
+        .status(400)
+        .json({ message: "Le code OTP a expiré ou n'existe pas." });
+    }
 
-      if (userOTPcode.length < 6) {
-        throw new Error('Le code doit contenir 6 caractères');
-      }
+    if (userOTPcode.length < 6) {
+      throw new Error('Le code doit contenir 6 caractères');
+    }
 
-      if (OTPcode !== userOTPcode) {
-        throw new Error('Les codes ne  sont pas identiques');
-      }
+    if (OTPcode !== userOTPcode) {
+      throw new Error('Les codes ne  sont pas identiques');
+    }
 
-      const createdUser = await userDatamapper.save(
-        email,
-        passwordHashed,
-        pseudo
-      );
-      delete createdUser.password;
+    const createdUser = await userDatamapper.save(
+      email,
+      passwordHashed,
+      pseudo
+    );
+    delete createdUser.password;
 
-      const userToken = jwt.sign(
-        { id: createdUser.id },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: '1h',
-        }
-      );
+    const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
-      res.cookie('jwt', userToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'Lax',
-        maxAge: 3600000, // 1 heure
-      });
+    res.cookie('jwt', userToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+      maxAge: 3600000, // 1 heure
+    });
 
-      await redis.del(`otp:${id}`);
+    await redis.del(`otp:${id}`);
 
-      console.log(
-        `Tout s'est bien passé et voici les info recuperer via redis ${email}|| ${pseudo} `
-      );
+    console.log(
+      `Tout s'est bien passé et voici les info recuperer via redis ${email}|| ${pseudo} `
+    );
 
-      res.json({ infos: 'Utilisateur créé' });
-    } catch (error) {}
+    res.json({ infos: 'Utilisateur créé' });
   },
 };
 
