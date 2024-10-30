@@ -1,17 +1,20 @@
 import ApiError from './error.js';
+import jwt from 'jsonwebtoken';
 
 export function errorHandler(error, _req, res, _next) {
-  const { message, title, status } = error;
+  let status = 500;
+  let message = 'Erreur inattendue, veuillez réessayer plus tard';
 
-  // Is this a custom error ?
   if (error instanceof ApiError) {
-    res.status(status).json({
-      title,
-      message,
-    });
-  } else {
-    res
-      .status(500)
-      .json({ message: 'Erreur innatendue, veuillez réessayer plus tard' });
+    status = error.status || 500;
+    message = error.message || 'Erreur inconnue';
+  } else if (error instanceof jwt.TokenExpiredError) {
+    status = 401;
+    message = 'Votre session a expiré, veuillez vous reconnecter';
+  } else if (error instanceof jwt.JsonWebTokenError) {
+    status = 401;
+    message = 'Accès refusé';
   }
+
+  return res.status(status).json({ message });
 }
