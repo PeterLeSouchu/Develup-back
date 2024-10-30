@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import userController from '../../datamappers/user-datamapper.js';
 import otpGenerator from 'otp-generator';
 import { hashPassword } from '../../utils/hash.js';
@@ -7,21 +6,26 @@ import { v4 as uuidv4 } from 'uuid';
 import userDatamapper from '../../datamappers/user-datamapper.js';
 import { redis } from '../../database/redis.js';
 import jwt from 'jsonwebtoken';
+import ApiError from '../../errors/error.js';
 
 const signupController = {
   async sendOTP(req, res) {
     const { email, pseudo, password, passwordConfirm } = req.body;
 
+    // We use it to allow us to target the necessary information in redis in the next method. Instead of using email, we use id to make our app more secure
     const id = uuidv4();
 
     const userExist = await userController.checkByEmail(email);
 
     if (userExist) {
-      throw new Error('Utilisateur déja inscrit');
+      throw new ApiError(
+        'Cet e-mail est déjà associé à un compte existant.',
+        409
+      );
     }
 
     if (password !== passwordConfirm) {
-      throw new Error('Les mots de passe ne correspondent pas');
+      throw new ApiError('Les mots de passe ne correspondent pas', 400);
     }
     const passwordHashed = await hashPassword(password);
 
@@ -60,34 +64,37 @@ const signupController = {
 
     console.log('code envoyé');
 
-    res.status(200).json({ info: 'OTP sented', token });
+    res.status(200).json({ message: 'code OTP envoyé' });
   },
   async registerUser(req, res) {
     const { userOTPcode } = req.body;
 
-    const token = req.cookies.jwt;
+    const id = req.user.id;
 
-    if (!token) {
-      return res.sendStatus(401);
+    const redisDataUser = await redis.get(`otp:${id}`);
+    if (!redisDataUser) {
+      throw new ApiError(
+        "Le code OTP n'est plus valide, remplissez de nouveau le formulaire d'inscription pour recevoir un nouveau code OTP",
+        400
+      );
     }
 
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
-
     const { email, pseudo, passwordHashed, OTPcode } =
-      JSON.parse(await redis.get(`otp:${id}`)) || {};
+      JSON.parse(redisDataUser);
 
     if (!OTPcode) {
-      return res
-        .status(400)
-        .json({ message: "Le code OTP a expiré ou n'existe pas." });
+      throw new ApiError(
+        "Le code OTP n'est plus valide, remplissez de nouveau le formulaire d'inscription pour recevoir un nouveau code OTP",
+        400
+      );
     }
 
     if (userOTPcode.length < 6) {
-      throw new Error('Le code doit contenir 6 caractères');
+      throw new ApiError('Le code OTP doit contenir 6 caractères', 400);
     }
 
     if (OTPcode !== userOTPcode) {
-      throw new Error('Les codes ne  sont pas identiques');
+      throw new ApiError('Code OTP invalide', 400);
     }
 
     const createdUser = await userDatamapper.save(
@@ -95,7 +102,6 @@ const signupController = {
       passwordHashed,
       pseudo
     );
-    delete createdUser.password;
 
     const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
@@ -111,10 +117,10 @@ const signupController = {
     await redis.del(`otp:${id}`);
 
     console.log(
-      `Tout s'est bien passé et voici les info recuperer via redis ${email}|| ${pseudo} `
+      `Tout s'est bien passé et voici les infos recuperées via redis ${email}|| ${pseudo} `
     );
 
-    res.json({ infos: 'Utilisateur créé' });
+    res.json({ message: 'Utilisateur créé' });
   },
 };
 

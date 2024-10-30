@@ -1,21 +1,21 @@
-import 'dotenv/config';
 import userDatamapper from '../../datamappers/user-datamapper.js';
 import { verifyPassword } from '../../utils/hash.js';
 import jwt from 'jsonwebtoken';
+import ApiError from '../../errors/error.js';
 
 const signinController = {
   async login(req, res) {
     const { email, password } = req.body;
     const userExist = await userDatamapper.checkByEmail(email);
     if (!userExist) {
-      throw new Error('Identifiant incorrect');
+      throw new ApiError('Identifiants incorrects', 401);
     }
 
     const passwordHashFromDB = userExist.password;
 
     const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
     if (!isGoodPassword) {
-      throw new Error('Identifiant incorrect');
+      throw new ApiError('Identifiants incorrects', 401);
     }
 
     const userToken = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
@@ -29,7 +29,7 @@ const signinController = {
       maxAge: 3600000, // 1 heure
     });
 
-    res.status(200).json({ infos: 'utilisateur connecté' });
+    res.status(200).json({ message: 'Utilisateur authentifié' });
   },
 };
 
