@@ -5,7 +5,7 @@ import { hashPassword } from '../../utils/hash.js';
 import { sendMail } from '../../utils/nodemailer.js';
 import { v4 as uuidv4 } from 'uuid';
 import userDatamapper from '../../datamappers/user-datamapper.js';
-import { redis } from '../../utils/redis.js';
+import { redis } from '../../database/redis.js';
 import jwt from 'jsonwebtoken';
 
 const signupController = {
