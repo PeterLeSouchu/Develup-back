@@ -10,13 +10,15 @@ const forgotPasswordController = {
 
     const userExist = await userDatamapper.checkByEmail(email);
     if (!userExist) {
-      throw new ApiError("Ce compte n'existe pas");
+      throw new ApiError(
+        'Lien de réinitialisation du mot de passe envoyé',
+        200
+      );
     }
 
     const token = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
       expiresIn: '15m',
     });
-    console.log("L'étape du token est passée");
 
     const link = `${process.env.HOST_FRONT}/reset-password/${token}`;
 
@@ -29,35 +31,27 @@ const forgotPasswordController = {
        `;
 
     await sendMail(email, subject, mailMessage);
-    console.log('Le mail est envoyé');
 
     res
       .status(200)
-      .json({ infos: 'Demande de réinitialisation de mot de passe envoyée' });
+      .json({ message: 'Lien de réinitialisation du mot de passe envoyé' });
   },
   async resetPassword(req, res) {
     const { token, password, passwordConfirm } = req.body;
 
     if (password !== passwordConfirm) {
-      throw new Error('Les mots de passe ne correspondent pas');
+      throw new ApiError('Les mots de passe ne correspondent pas', 400);
     }
 
-    if (!token) return res.status(401).json({ message: 'Aucun token.' });
-
-    // jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    //   if (err) {
-    //     return res.status(403).json({ message: 'Invalid or expired token.' });
-    //   }
-    //   // Token est valide, vous pouvez accéder aux données décodées
-    //   req.user = decoded; // Enregistrer les données utilisateur dans la requête
-    //   // Continuez avec le traitement de la requête
-    // });
+    if (!token) {
+      throw new ApiError("Le lien de réinitialisation n'est plus valide", 400);
+    }
 
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
 
     const userExist = await userDatamapper.checkById(id);
     if (!userExist) {
-      throw new Error("L'utilisateur n'existe pas");
+      throw new ApiError("Le lien de réinitialisation n'est plus valide", 400);
     }
 
     const passwordHashed = await hashPassword(password);
