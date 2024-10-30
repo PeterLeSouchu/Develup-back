@@ -3,6 +3,7 @@ import signupController from '../controllers/public-controllers/signup-controlle
 import signinController from '../controllers/public-controllers/signin-controller.js';
 import forgotPasswordController from '../controllers/public-controllers/forgot-password-controller.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
+import { errorHandler } from '../errors/error-handler-middleware.js';
 
 const publicRouter = Router();
 

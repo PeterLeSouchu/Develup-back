@@ -1,13 +1,13 @@
-export function errorHandler(error, _req, res) {
-  console.log(error);
+import ApiError from './error.js';
+
+export function errorHandler(error, _req, res, _next) {
   const { message, title, status } = error;
 
-  // If personalized error
+  // Is this a custom error ?
   if (error instanceof ApiError) {
-    res.status(error.status).json({
+    res.status(status).json({
       title,
       message,
-      status,
     });
   } else {
     res
