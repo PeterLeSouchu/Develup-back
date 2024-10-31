@@ -30,7 +30,11 @@ const signupController = {
     }
     const passwordHashed = await hashPassword(password);
 
-    const OTPcode = otpGenerator.generate(6);
+    const OTPcode = otpGenerator.generate(6, {
+      upperCase: false,
+      specialChars: false,
+      alphabets: false,
+    });
 
     const userData = {
       email,
