@@ -7,6 +7,7 @@ import jwtMiddleware from '../security/jwt-middleware.js';
 import validateSchema from '../validation/validate-middleware.js';
 import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
 import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
+import csrfMiddleware from '../security/csrf/crsf-middleware.js';
 
 const publicRouter = Router();
 
@@ -23,7 +24,11 @@ publicRouter.post(
   tryCatchMiddleware(signupController.registerUser)
 );
 
-publicRouter.post('/api/signin', tryCatchMiddleware(signinController.login));
+publicRouter.post(
+  '/api/signin',
+  csrfMiddleware,
+  tryCatchMiddleware(signinController.login)
+);
 
 publicRouter.post(
   '/api/forgot-password',
