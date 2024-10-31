@@ -7,9 +7,9 @@ import jwtMiddleware from '../security/jwt-middleware.js';
 
 const publicRouter = Router();
 
-// Use of TryCatchContoller to catch error, so we don't need to use try catch inside controllers
-const route = (method, path, controller) => {
-  publicRouter[method](path, tryCatchMiddleware(controller));
+// Use of TryCatchContoller to catch error, so we don't need to use try catch inside controllers only, not for other middlewares
+const route = (method, path, ...handlers) => {
+  publicRouter[method](path, tryCatchMiddleware(...handlers));
 };
 
 route('post', '/api/signup/otp', signupController.sendOTP);

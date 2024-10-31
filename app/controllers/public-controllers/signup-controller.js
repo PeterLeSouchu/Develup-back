@@ -12,7 +12,7 @@ const signupController = {
   async sendOTP(req, res) {
     const { email, pseudo, password, passwordConfirm } = req.body;
 
-    // We use it to allow us to target the necessary information in redis in the next method. Instead of using email, we use id to make our app more secure
+    // We use it to allow us to target the necessary information in Redis in the next method. Instead of using email, we use id to make our app more secure
     const id = uuidv4();
 
     const userExist = await userController.checkByEmail(email);
@@ -23,6 +23,7 @@ const signupController = {
         409
       );
     }
+    console.log('four');
 
     if (password !== passwordConfirm) {
       throw new ApiError('Les mots de passe ne correspondent pas', 400);
@@ -44,7 +45,7 @@ const signupController = {
       expiresIn: '15m',
     });
 
-    const subject = 'OTC Code';
+    const subject = 'OTP Code';
 
     const mailMessage = `<h1> Develup </h1>
       <p>Bonjour ${pseudo},</p>
@@ -67,6 +68,7 @@ const signupController = {
     res.status(200).json({ message: 'code OTP envoyé' });
   },
   async registerUser(req, res) {
+    console.log('on est dans le controller de register');
     const { userOTPcode } = req.body;
 
     const id = req.user.id;
