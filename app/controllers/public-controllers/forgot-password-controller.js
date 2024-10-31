@@ -44,21 +44,21 @@ const forgotPasswordController = {
     }
 
     if (!token) {
-      throw new ApiError("Le lien de réinitialisation n'est plus valide", 400);
+      throw new ApiError("Le lien de réinitialisation n'est plus valide", 401);
     }
 
-    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+    const id = req.user.id;
 
     const userExist = await userDatamapper.checkById(id);
     if (!userExist) {
-      throw new ApiError("Le lien de réinitialisation n'est plus valide", 400);
+      throw new ApiError("Le lien de réinitialisation n'est plus valide", 401);
     }
 
     const passwordHashed = await hashPassword(password);
 
     await userDatamapper.changePassword(passwordHashed, id);
     console.log('mot de passe changé avec succes');
-    res.json({ infos: 'Mot de passe changé' });
+    res.json({ message: 'Mot de passe changé' });
   },
 };
 
