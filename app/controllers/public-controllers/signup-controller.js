@@ -23,7 +23,6 @@ const signupController = {
         409
       );
     }
-    console.log('four');
 
     if (password !== passwordConfirm) {
       throw new ApiError('Les mots de passe ne correspondent pas', 400);
@@ -31,10 +30,12 @@ const signupController = {
     const passwordHashed = await hashPassword(password);
 
     const OTPcode = otpGenerator.generate(6, {
-      upperCase: false,
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
       specialChars: false,
-      alphabets: false,
     });
+    console.log(OTPcode);
 
     const userData = {
       email,
@@ -72,7 +73,6 @@ const signupController = {
     res.status(200).json({ message: 'code OTP envoyé' });
   },
   async registerUser(req, res) {
-    console.log('on est dans le controller de register');
     const { userOTPcode } = req.body;
 
     const id = req.user.id;

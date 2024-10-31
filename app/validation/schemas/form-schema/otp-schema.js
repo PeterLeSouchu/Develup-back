@@ -1,6 +1,8 @@
 import Joi from 'joi';
-import { otpSchema } from './inputs-schema';
+import { otpSchema } from '../inputs-schema.js';
 
-export const otpSchema = Joi.object({
+const otpSignupSchema = Joi.object({
   userOTPcode: otpSchema,
 });
+
+export default otpSignupSchema;
