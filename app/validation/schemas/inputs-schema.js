@@ -37,3 +37,7 @@ export const otpSchema = Joi.string()
     'string.empty': "L'OTP est requis.",
     'string.pattern.base': "L'OTP doit être composé uniquement de chiffres.",
   });
+
+export const cguSchema = Joi.boolean().valid(true).required().messages({
+  'any.required': "Vous devez accepter les conditions générales d'utilisation.",
+});

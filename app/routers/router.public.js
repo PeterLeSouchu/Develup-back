@@ -4,23 +4,35 @@ import signinController from '../controllers/public-controllers/signin-controlle
 import forgotPasswordController from '../controllers/public-controllers/forgot-password-controller.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import jwtMiddleware from '../security/jwt-middleware.js';
+import validateSchema from '../validation/validate-middleware.js';
+import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
+import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
 
 const publicRouter = Router();
 
-// Use of TryCatchContoller to catch error, so we don't need to use try catch inside controllers or middlewares.
-const route = (method, path, ...handlers) => {
-  publicRouter[method](path, tryCatchMiddleware(...handlers));
-};
+publicRouter.post(
+  '/api/signup/otp',
+  validateSchema(signupSchema),
+  tryCatchMiddleware(signupController.sendOTP)
+);
 
-route('post', '/api/signup/otp', signupController.sendOTP);
-route(
-  'post',
+publicRouter.post(
   '/api/signup/register',
   jwtMiddleware,
-  signupController.registerUser
+  validateSchema(otpSignupSchema),
+  tryCatchMiddleware(signupController.registerUser)
 );
-route('post', '/api/signin', signinController.login);
-route('post', '/api/forgot-password', forgotPasswordController.sendResetLink);
-route('patch', '/api/reset-password', forgotPasswordController.resetPassword);
+
+publicRouter.post('/api/signin', tryCatchMiddleware(signinController.login));
+
+publicRouter.post(
+  '/api/forgot-password',
+  tryCatchMiddleware(forgotPasswordController.sendResetLink)
+);
+
+publicRouter.patch(
+  '/api/reset-password',
+  tryCatchMiddleware(forgotPasswordController.resetPassword)
+);
 
 export default publicRouter;

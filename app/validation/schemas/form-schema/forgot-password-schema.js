@@ -1,6 +1,8 @@
 import Joi from 'joi';
-import { emailSchema } from './inputs-schema';
+import { emailSchema } from '../inputs-schema.js';
 
-export const forgotPasswordSchema = Joi.object({
+const forgotPasswordSchema = Joi.object({
   email: emailSchema,
 });
+
+export default forgotPasswordSchema;
