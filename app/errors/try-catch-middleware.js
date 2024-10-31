@@ -1,10 +1,13 @@
-const tryCatchMiddleware = (controller) => async (req, res, next) => {
-  try {
-    await controller(req, res, next);
-  } catch (err) {
-    console.log('On est dans le try catch');
-    next(err);
-  }
-};
+const tryCatchMiddleware =
+  (...handlers) =>
+  async (req, res, next) => {
+    for (const handler of handlers) {
+      try {
+        await handler(req, res, next);
+      } catch (error) {
+        next(error);
+      }
+    }
+  };
 
 export default tryCatchMiddleware;

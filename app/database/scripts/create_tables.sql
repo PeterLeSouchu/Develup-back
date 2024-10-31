@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS "message" CASCADE;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE "user" (
-    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "pseudo" TEXT NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE "project" (
     "rhythm" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ
 );
@@ -50,7 +50,7 @@ CREATE TABLE "techno" (
 -- Tables de liaison
 CREATE TABLE "user_techno" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "techno_id" INTEGER NOT NULL REFERENCES "techno" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ
@@ -68,8 +68,8 @@ CREATE TABLE "conversation" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "title" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "user_id1" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
-    "user_id2" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id1" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id2" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ
 );
@@ -77,7 +77,7 @@ CREATE TABLE "conversation" (
 CREATE TABLE "message" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "content" TEXT NOT NULL,
-    "user_id" INTEGER NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
+    "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "conversation_id" UUID REFERENCES conversation(id) ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ
