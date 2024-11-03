@@ -7,7 +7,7 @@ const doubleCsrfOptions = {
 
 const {
   generateToken,
-  doubleCsrfProtection, // Csrf middleware to check the CSRF token. Put in before a controller method
+  doubleCsrfProtection, // Csrf middleware to check the CSRF token
 } = doubleCsrf(doubleCsrfOptions);
 
 export { doubleCsrfProtection, generateToken };

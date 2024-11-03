@@ -8,6 +8,7 @@ import validateSchema from '../validation/validate-middleware.js';
 import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
 import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
 import csrfMiddleware from '../security/csrf/crsf-middleware.js';
+import jwtResetPasswordMiddleware from '../security/jwt-reset-password-middleware.js';
 
 const publicRouter = Router();
 
@@ -37,6 +38,7 @@ publicRouter.post(
 
 publicRouter.patch(
   '/api/reset-password',
+  jwtResetPasswordMiddleware,
   tryCatchMiddleware(forgotPasswordController.resetPassword)
 );
 
