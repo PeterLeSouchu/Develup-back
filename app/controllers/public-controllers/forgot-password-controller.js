@@ -19,6 +19,7 @@ const forgotPasswordController = {
     const token = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
       expiresIn: '15m',
     });
+    console.log(token);
 
     const link = `${process.env.HOST_FRONT}/reset-password/${token}`;
 
@@ -37,17 +38,12 @@ const forgotPasswordController = {
       .json({ message: 'Lien de réinitialisation du mot de passe envoyé' });
   },
   async resetPassword(req, res) {
-    const { token, password, passwordConfirm } = req.body;
+    const { password, passwordConfirm } = req.body;
+    const id = req.user.id;
 
     if (password !== passwordConfirm) {
       throw new ApiError('Les mots de passe ne correspondent pas', 400);
     }
-
-    if (!token) {
-      throw new ApiError("Le lien de réinitialisation n'est plus valide", 401);
-    }
-
-    const id = req.user.id;
 
     const userExist = await userDatamapper.checkById(id);
     if (!userExist) {
