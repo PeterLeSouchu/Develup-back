@@ -5,7 +5,6 @@ import ApiError from '../../errors/error.js';
 
 const signinController = {
   async login(req, res) {
-    console.log('On est dans le controller login');
     const { email, password } = req.body;
     const userExist = await userDatamapper.checkByEmail(email);
     if (!userExist) {
