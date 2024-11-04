@@ -19,7 +19,6 @@ const forgotPasswordController = {
     const token = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
       expiresIn: '15m',
     });
-    console.log(token);
 
     const link = `${process.env.HOST_FRONT}/reset-password/${token}`;
 
