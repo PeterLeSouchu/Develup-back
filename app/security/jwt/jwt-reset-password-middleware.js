@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken';
-import ApiError from '../errors/error.js';
+import ApiError from '../../errors/error.js';
 
-const jwtMiddleware = (req, _res, next) => {
+const jwtResetPasswordMiddleware = (req, _res, next) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.body.token;
     if (!token) {
       return next(new ApiError('Accès refusé', 401));
     }
-
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.user = payload;
     next();
@@ -24,4 +23,4 @@ const jwtMiddleware = (req, _res, next) => {
   }
 };
 
-export default jwtMiddleware;
+export default jwtResetPasswordMiddleware;
