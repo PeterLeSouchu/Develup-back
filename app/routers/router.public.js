@@ -3,12 +3,12 @@ import signupController from '../controllers/public-controllers/signup-controlle
 import signinController from '../controllers/public-controllers/signin-controller.js';
 import forgotPasswordController from '../controllers/public-controllers/forgot-password-controller.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
-import jwtMiddleware from '../security/jwt-middleware.js';
+import jwtMiddleware from '../security/jwt/jwt-middleware.js';
 import validateSchema from '../validation/validate-middleware.js';
 import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
 import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
 import csrfMiddleware from '../security/csrf/crsf-middleware.js';
-import jwtResetPasswordMiddleware from '../security/jwt-reset-password-middleware.js';
+import jwtResetPasswordMiddleware from '../security/jwt/jwt-reset-password-middleware.js';
 
 const publicRouter = Router();
 
@@ -27,7 +27,7 @@ publicRouter.post(
 
 publicRouter.post(
   '/api/signin',
-  csrfMiddleware,
+  // csrfMiddleware,
   tryCatchMiddleware(signinController.login)
 );
 
