@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./app/app.js",
     "db:create": "psql -p 5432 -U develup -d develup -f ./app/database/scripts/create_tables.sql",
-    "db:seeding": "node ./database/scripts/seeding_tables.js"
+    "db:seeding": "node ./app/database/scripts/seeding_tables.js"
   },
   "keywords": [],
   "author": "",
