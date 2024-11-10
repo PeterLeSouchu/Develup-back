@@ -10,7 +10,6 @@ const csrfMiddleware = (req, res, next) => {
           new ApiError('Une erreur est survenue, merci de réessayer', 403)
         );
       }
-      console.log('on est dans le middleware csrf juste avant le next');
       next();
     });
   } catch (error) {

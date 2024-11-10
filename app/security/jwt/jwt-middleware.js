@@ -13,6 +13,7 @@ const jwtMiddleware = (req, _res, next) => {
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
+      console.log('token expiré');
       next(
         new ApiError('Votre session a expiré, veuillez vous reconnecter', 401)
       );
