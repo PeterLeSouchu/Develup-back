@@ -1,5 +1,4 @@
 import projectDatamapper from '../../datamappers/project-datamapper.js';
-import ApiError from '../../errors/error.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -20,10 +19,9 @@ const projectController = {
       technoNameSelected,
       rhythm
     );
-    console.log(result);
     res.status(200).json({ message: 'Recherche réussie', result });
   },
-  async defaultProject(req, res) {
+  async defaultProjects(req, res) {
     const result = await projectDatamapper.returnDefaultProjects();
     res
       .status(200)

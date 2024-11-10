@@ -1,7 +1,7 @@
 import technologieDatamapper from '../../datamappers/technologie-datamapper.js';
 
 const technologieController = {
-  async defaultTechnologie(req, res) {
+  async defaultTechnologies(req, res) {
     const result = await technologieDatamapper.returnDefaultTechnologie();
     res
       .status(200)
