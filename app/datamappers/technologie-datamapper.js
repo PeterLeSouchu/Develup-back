@@ -1,7 +1,7 @@
 import client from '../database/pg.client.js';
 
 const projectDatamapper = {
-  async returnDefaultTechnologie() {
+  async getDefaultTechnologie() {
     const response = await client.query(
       `
             SELECT * 
