@@ -2,7 +2,6 @@ import { Router } from 'express';
 import userController from '../controllers/user-controller.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import validateSchema from '../validation/validate-middleware.js';
-import loginSchema from '../validation/schemas/form-schema/login-schema.js';
 import forgotPasswordSchema from '../validation/schemas/form-schema/forgot-password-schema.js';
 import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
 import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
@@ -25,11 +24,7 @@ publicRouter.post(
   tryCatchMiddleware(userController.registerUser)
 );
 
-publicRouter.post(
-  '/api/signin',
-  validateSchema(loginSchema),
-  tryCatchMiddleware(userController.login)
-);
+publicRouter.post('/api/signin', tryCatchMiddleware(userController.login));
 
 publicRouter.post(
   '/api/forgot-password',
