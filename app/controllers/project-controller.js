@@ -28,10 +28,17 @@ const projectController = {
     res.status(200).json({ message: 'Recherche réussie', result });
   },
   async defaultProjects(req, res) {
-    const result = await projectDatamapper.returnDefaultProjects();
+    const result = await projectDatamapper.getDefaultProjects();
     res
       .status(200)
       .json({ message: 'Récupération de projet(s) réussie', result });
+  },
+  async detailsProject(req, res) {
+    const projectId = req.params.id;
+    const result = await projectDatamapper.getDetailsProject(projectId);
+    res
+      .status(200)
+      .json({ message: 'Récupération des données du projet réussie', result });
   },
 };
 
