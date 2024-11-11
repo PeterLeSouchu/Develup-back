@@ -2,10 +2,12 @@ import { Router } from 'express';
 import jwtMiddleware from '../security/jwt/jwt-middleware.js';
 import csrfMiddleware from '../security/csrf/crsf-middleware.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
-import userController from '../controllers/privateController/user-controller.js';
-import projectController from '../controllers/privateController/project-controller.js';
-import technologieController from '../controllers/privateController/technologie-controller.js';
+import userController from '../controllers/user-controller.js';
+import projectController from '../controllers/project-controller.js';
+import technologieController from '../controllers/technologie-controller.js';
 const privateRouter = Router();
+
+privateRouter.use(jwtMiddleware);
 
 privateRouter.post('/api/logout', tryCatchMiddleware(userController.logout));
 privateRouter.post(
@@ -20,4 +22,6 @@ privateRouter.get(
   '/api/technologies',
   tryCatchMiddleware(technologieController.defaultTechnologies)
 );
+
+privateRouter.get('/');
 export default privateRouter;

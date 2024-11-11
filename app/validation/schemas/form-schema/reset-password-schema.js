@@ -1,7 +1,9 @@
 import Joi from 'joi';
 import { passwordSchema } from '../inputs-schema.js';
 
-export const resetPasswordSchema = Joi.object({
+const resetPasswordSchema = Joi.object({
   password: passwordSchema,
   passwordConfirm: passwordSchema,
 });
+
+export default resetPasswordSchema;
