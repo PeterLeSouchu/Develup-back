@@ -1,4 +1,4 @@
-import technologieDatamapper from '../../datamappers/technologie-datamapper.js';
+import technologieDatamapper from '../datamappers/technologie-datamapper.js';
 
 const technologieController = {
   async defaultTechnologies(req, res) {

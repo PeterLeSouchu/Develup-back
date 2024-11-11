@@ -1,14 +1,16 @@
-import projectDatamapper from '../../datamappers/project-datamapper.js';
+import projectDatamapper from '../datamappers/project-datamapper.js';
 
 const projectController = {
   async searchProject(req, res) {
-    const { technoNameSelected, rhythm } = req.body;
+    const { technoNameSelected, inputRhythmValue } = req.body;
 
     if (technoNameSelected.length === 0) {
-      const result = await projectDatamapper.searchProjectByRhythm(rhythm);
+      const result = await projectDatamapper.searchProjectByRhythm(
+        inputRhythmValue
+      );
       return res.status(200).json({ message: 'Recherche réussie', result });
     }
-    if (!rhythm) {
+    if (!inputRhythmValue) {
       const result = await projectDatamapper.searchProjectByTechno(
         technoNameSelected
       );
@@ -17,7 +19,7 @@ const projectController = {
 
     const result = await projectDatamapper.searchProjectByTechnoAndRhythm(
       technoNameSelected,
-      rhythm
+      inputRhythmValue
     );
     res.status(200).json({ message: 'Recherche réussie', result });
   },
