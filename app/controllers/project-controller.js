@@ -1,4 +1,5 @@
 import projectDatamapper from '../datamappers/project-datamapper.js';
+import ApiError from '../errors/error.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -15,6 +16,9 @@ const projectController = {
         technoNameSelected
       );
       return res.status(200).json({ message: 'Recherche réussie', result });
+    }
+    if (!inputRhythmValue && technoNameSelected.length === 0) {
+      throw new ApiError('Veuillez sélectionner au moins 1 champ', 400);
     }
 
     const result = await projectDatamapper.searchProjectByTechnoAndRhythm(

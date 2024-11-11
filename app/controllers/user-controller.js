@@ -54,7 +54,7 @@ const userController = {
     const mailMessage = `<h1> Develup </h1>
       <p>Bonjour ${pseudo},</p>
       <p>Nous vous souhaitons la bienvenue sur Develup! </p>
-      <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span> ${OTPcode}</span></p>
+      <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span style="font-size: 1.5em; font-weight: bold; color: #4A90E2;"> ${OTPcode}</span></p>
       <p>Merci à vous et bonne visite!</p>
     `;
 
