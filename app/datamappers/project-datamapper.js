@@ -102,7 +102,7 @@ GROUP BY
     );
     return response.rows;
   },
-  async returnDefaultProjects() {
+  async getDefaultProjects() {
     const response = await client.query(
       `SELECT 
     p.*,  
@@ -110,8 +110,7 @@ GROUP BY
         json_build_object(
             'id', t.id,
             'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
+            'image', t.image
         )
     ) AS techno
 FROM 
@@ -127,6 +126,35 @@ ORDER BY
 `
     );
     return response.rows;
+  },
+  async getDetailsProject(projectId) {
+    const response = await client.query(
+      `
+        SELECT 
+    p.*,  
+    u.pseudo, 
+    json_agg(
+        json_build_object(
+            'id', t.id,
+            'name', t.name,
+            'image', t.image
+        )
+    ) AS techno
+FROM 
+    project p
+JOIN 
+    project_techno pt ON p.id = pt.project_id
+JOIN 
+    techno t ON pt.techno_id = t.id
+JOIN
+    "user" u ON p.user_id = u.id  
+WHERE 
+    p.id = $1  
+GROUP BY 
+    p.id, u.pseudo; `,
+      [projectId]
+    );
+    return response.rows[0];
   },
 };
 
