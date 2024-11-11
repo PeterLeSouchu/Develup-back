@@ -7,9 +7,9 @@ import projectController from '../controllers/project-controller.js';
 import technologieController from '../controllers/technologie-controller.js';
 const privateRouter = Router();
 
+privateRouter.post('/api/logout', tryCatchMiddleware(userController.logout));
 privateRouter.use(jwtMiddleware);
 
-privateRouter.post('/api/logout', tryCatchMiddleware(userController.logout));
 privateRouter.post(
   '/api/search',
   tryCatchMiddleware(projectController.searchProject)
@@ -23,5 +23,8 @@ privateRouter.get(
   tryCatchMiddleware(technologieController.defaultTechnologies)
 );
 
-privateRouter.get('/');
+privateRouter.get(
+  '/api/project/:id',
+  tryCatchMiddleware(projectController.detailsProject)
+);
 export default privateRouter;
