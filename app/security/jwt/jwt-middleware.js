@@ -1,24 +1,45 @@
 import jwt from 'jsonwebtoken';
 import ApiError from '../../errors/error.js';
+import userDatamapper from '../../datamappers/user-datamapper.js';
 
-const jwtMiddleware = (req, _res, next) => {
+const jwtMiddleware = async (req, _res, next) => {
   try {
     const token = req.cookies.jwt;
     if (!token) {
-      return next(new ApiError('Accès refusé', 401));
+      console.log('pas de token');
+      return next(
+        new ApiError(
+          'Une erreur inattendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
+          401
+        )
+      );
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userExist = await userDatamapper.checkById(payload.id);
+    if (!userExist) {
+      throw new ApiError(
+        'Une erreur inattendu est survenue, essayez de vous reconnecter pour résoudre ce problème',
+        401
+      );
+    }
     req.user = payload;
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      next(
+      return next(
         new ApiError('Votre session a expiré, veuillez vous reconnecter', 401)
       );
     }
     if (error instanceof jwt.JsonWebTokenError) {
-      next(new ApiError('Accès refusé', 401));
+      console.log('token pas bon');
+      return next(
+        new ApiError(
+          'Une erreur inattendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
+          401
+        )
+      );
     }
     next(error);
   }

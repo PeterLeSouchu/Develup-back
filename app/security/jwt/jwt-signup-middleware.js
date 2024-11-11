@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken';
 import ApiError from '../../errors/error.js';
 
-const jwtResetPasswordMiddleware = (req, _res, next) => {
+const jwtSignupMiddleware = (req, _res, next) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.cookies.jwt;
     if (!token) {
       return next(new ApiError('Une erreur inattendue est survenue', 401));
     }
@@ -14,7 +13,10 @@ const jwtResetPasswordMiddleware = (req, _res, next) => {
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return next(
-        new ApiError("Le lien de réinitialisation n'est plus valide", 401)
+        new ApiError(
+          "Le code OTP n'est plus valide, remplissez de nouveau le formulaire d'inscription pour recevoir un nouveau code OTP",
+          401
+        )
       );
     }
     if (error instanceof jwt.JsonWebTokenError) {
@@ -24,4 +26,4 @@ const jwtResetPasswordMiddleware = (req, _res, next) => {
   }
 };
 
-export default jwtResetPasswordMiddleware;
+export default jwtSignupMiddleware;
