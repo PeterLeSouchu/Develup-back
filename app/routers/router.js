@@ -7,7 +7,7 @@ const router = Router();
 // call when user is connected with useEffect in react
 router.get('/api/csrf-token', csrfTokenMethod);
 
-router.use(privateRouter);
 router.use(publicRouter);
+router.use(privateRouter);
 
 export default router;

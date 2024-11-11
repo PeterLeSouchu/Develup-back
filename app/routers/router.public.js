@@ -1,40 +1,42 @@
 import { Router } from 'express';
-import signupController from '../controllers/public-controllers/signup-controller.js';
-import signinController from '../controllers/public-controllers/signin-controller.js';
-import forgotPasswordController from '../controllers/public-controllers/forgot-password-controller.js';
+import userController from '../controllers/user-controller.js';
 import tryCatchMiddleware from '../errors/try-catch-middleware.js';
-import jwtMiddleware from '../security/jwt/jwt-middleware.js';
 import validateSchema from '../validation/validate-middleware.js';
+import forgotPasswordSchema from '../validation/schemas/form-schema/forgot-password-schema.js';
 import otpSignupSchema from '../validation/schemas/form-schema/otp-schema.js';
 import signupSchema from '../validation/schemas/form-schema/singup-schema.js';
+import resetPasswordSchema from '../validation/schemas/form-schema/reset-password-schema.js';
 import jwtResetPasswordMiddleware from '../security/jwt/jwt-reset-password-middleware.js';
+import jwtSignupMiddleware from '../security/jwt/jwt-signup-middleware.js';
 
 const publicRouter = Router();
 
 publicRouter.post(
   '/api/signup/otp',
   validateSchema(signupSchema),
-  tryCatchMiddleware(signupController.sendOTP)
+  tryCatchMiddleware(userController.sendOTP)
 );
 
 publicRouter.post(
   '/api/signup/register',
-  jwtMiddleware,
+  jwtSignupMiddleware,
   validateSchema(otpSignupSchema),
-  tryCatchMiddleware(signupController.registerUser)
+  tryCatchMiddleware(userController.registerUser)
 );
 
-publicRouter.post('/api/signin', tryCatchMiddleware(signinController.login));
+publicRouter.post('/api/signin', tryCatchMiddleware(userController.login));
 
 publicRouter.post(
   '/api/forgot-password',
-  tryCatchMiddleware(forgotPasswordController.sendResetLink)
+  validateSchema(forgotPasswordSchema),
+  tryCatchMiddleware(userController.sendResetLink)
 );
 
 publicRouter.patch(
   '/api/reset-password',
   jwtResetPasswordMiddleware,
-  tryCatchMiddleware(forgotPasswordController.resetPassword)
+  validateSchema(resetPasswordSchema),
+  tryCatchMiddleware(userController.resetPassword)
 );
 
 export default publicRouter;
