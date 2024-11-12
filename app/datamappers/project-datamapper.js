@@ -137,6 +137,38 @@ ORDER BY
     );
     return response.rows;
   },
+  async getPersonalProjects(userId) {
+    const response = await client.query(
+      `
+SELECT 
+    p.*,
+    u.id AS user_id, 
+    json_agg(
+        json_build_object(
+            'id', t.id,
+            'name', t.name,
+            'image', t.image
+        )
+    ) AS techno
+FROM 
+    project p
+JOIN 
+    project_techno pt ON p.id = pt.project_id
+JOIN 
+    techno t ON pt.techno_id = t.id
+JOIN 
+    "user" u ON p.user_id = u.id
+    
+    WHERE u.id = $1
+GROUP BY 
+    p.id, u.id
+ORDER BY 
+    p.created_at DESC;
+`,
+      [userId]
+    );
+    return response.rows;
+  },
   async getDetailsProject(projectSlug) {
     const response = await client.query(
       `

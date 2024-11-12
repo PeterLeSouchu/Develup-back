@@ -18,6 +18,12 @@ privateRouter.get(
   '/api/projects',
   tryCatchMiddleware(projectController.defaultProjects)
 );
+
+privateRouter.get(
+  '/api/personal-projects',
+  tryCatchMiddleware(projectController.personalProjects)
+);
+
 privateRouter.get(
   '/api/technologies',
   tryCatchMiddleware(technologieController.defaultTechnologies)
