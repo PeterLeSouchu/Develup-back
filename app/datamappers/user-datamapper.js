@@ -31,14 +31,14 @@ const userDatamapper = {
     );
     return response.rows[0];
   },
-  async save(email, password, pseudo, slug) {
+  async save(email, password, pseudo, slug, image) {
     const response = await client.query(
       `
-      INSERT INTO "user"("email", "password", "pseudo", "slug")
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO "user"("email", "password", "pseudo", "slug", "image")
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
       ;`,
-      [email, password, pseudo, slug]
+      [email, password, pseudo, slug, image]
     );
     return response.rows[0];
   },
@@ -57,23 +57,27 @@ const userDatamapper = {
       `
 SELECT 
     u.*,  
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image
+    CASE 
+        WHEN COUNT(t.id) > 0 THEN json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
         )
-    ) AS techno
+        ELSE '[]'::json 
+    END AS techno
 FROM 
     "user" u
-JOIN 
+LEFT JOIN 
     user_techno ut ON u.id = ut.user_id
-JOIN 
+LEFT JOIN 
     techno t ON ut.techno_id = t.id
 WHERE 
     u.slug = $1
 GROUP BY 
     u.id;
+
 
 
       `,
