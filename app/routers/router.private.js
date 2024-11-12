@@ -24,7 +24,12 @@ privateRouter.get(
 );
 
 privateRouter.get(
-  '/api/project/:id',
+  '/api/project/:slug',
   tryCatchMiddleware(projectController.detailsProject)
+);
+
+privateRouter.get(
+  '/api/user/:slug',
+  tryCatchMiddleware(userController.detailsUser)
 );
 export default privateRouter;

@@ -7,6 +7,7 @@ import { verifyPassword } from '../utils/hash.js';
 import { redis } from '../database/redis.js';
 import { v4 as uuidv4 } from 'uuid';
 import otpGenerator from 'otp-generator';
+import generateUniqueSlug from '../utils/generate-slug.js';
 
 const userController = {
   async sendOTP(req, res) {
@@ -27,6 +28,10 @@ const userController = {
     if (password !== passwordConfirm) {
       throw new ApiError('Les mots de passe ne correspondent pas', 400);
     }
+
+    const slug = await generateUniqueSlug(pseudo, userDatamapper);
+    console.log('voici le slug :');
+    console.log(slug);
     const passwordHashed = await hashPassword(password);
 
     const OTPcode = otpGenerator.generate(6, {
@@ -40,6 +45,7 @@ const userController = {
       email,
       pseudo,
       passwordHashed,
+      slug,
       OTPcode,
     };
 
@@ -82,7 +88,7 @@ const userController = {
       );
     }
 
-    const { email, pseudo, passwordHashed, OTPcode } =
+    const { email, pseudo, passwordHashed, slug, OTPcode } =
       JSON.parse(redisDataUser);
 
     if (userOTPcode.length < 6) {
@@ -96,7 +102,8 @@ const userController = {
     const createdUser = await userDatamapper.save(
       email,
       passwordHashed,
-      pseudo
+      pseudo,
+      slug
     );
 
     const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
@@ -215,6 +222,16 @@ const userController = {
     await userDatamapper.changePassword(passwordHashed, id);
     console.log('mot de passe changé avec succes');
     res.json({ message: 'Mot de passe changé' });
+  },
+  async detailsUser(req, res) {
+    const userSlug = req.params.slug;
+    console.log(userSlug);
+    const result = await userDatamapper.getDetailsUser(userSlug);
+    console.log(result);
+    res.status(200).json({
+      message: "Récupération des données de l'utilisateur réussie",
+      result,
+    });
   },
 };
 

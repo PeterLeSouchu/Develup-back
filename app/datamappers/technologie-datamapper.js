@@ -1,6 +1,6 @@
 import client from '../database/pg.client.js';
 
-const projectDatamapper = {
+const technologieDatamapper = {
   async getDefaultTechnologie() {
     const response = await client.query(
       `
@@ -12,4 +12,4 @@ const projectDatamapper = {
   },
 };
 
-export default projectDatamapper;
+export default technologieDatamapper;
