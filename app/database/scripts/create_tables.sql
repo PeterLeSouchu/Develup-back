@@ -21,6 +21,7 @@ CREATE TABLE "user" (
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "pseudo" TEXT NOT NULL,
+    "slug" TEXT NOT NULL UNIQUE,
     "type" TEXT,
     "description" TEXT,
     "image" TEXT,
@@ -29,9 +30,10 @@ CREATE TABLE "user" (
 );
 
 CREATE TABLE "project" (
-    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "title" TEXT NOT NULL,
     "rhythm" TEXT NOT NULL,
+    "slug" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
@@ -58,7 +60,7 @@ CREATE TABLE "user_techno" (
 
 CREATE TABLE "project_techno" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "project_id" INTEGER NOT NULL REFERENCES "project" ("id") ON DELETE CASCADE,
+    "project_id" UUID NOT NULL REFERENCES "project" ("id") ON DELETE CASCADE,
     "techno_id" INTEGER NOT NULL REFERENCES "techno" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ

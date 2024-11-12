@@ -1,5 +1,5 @@
-import projectDatamapper from '../datamappers/project-datamapper.js';
 import ApiError from '../errors/error.js';
+import projectDatamapper from '../datamappers/project-datamapper.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -34,8 +34,8 @@ const projectController = {
       .json({ message: 'Récupération de projet(s) réussie', result });
   },
   async detailsProject(req, res) {
-    const projectId = req.params.id;
-    const result = await projectDatamapper.getDetailsProject(projectId);
+    const projectSlug = req.params.slug;
+    const result = await projectDatamapper.getDetailsProject(projectSlug);
     res
       .status(200)
       .json({ message: 'Récupération des données du projet réussie', result });

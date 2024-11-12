@@ -1,6 +1,16 @@
 import client from '../database/pg.client.js';
 
 const projectDatamapper = {
+  async findBySlug(slug) {
+    const response = await client.query(
+      `
+                  SELECT * FROM "project" 
+                    WHERE "slug" = $1
+                  ;`,
+      [slug]
+    );
+    return response.rows[0];
+  },
   async searchProjectByTechnoAndRhythm(technos, rhythm) {
     const response = await client.query(
       `
@@ -127,12 +137,13 @@ ORDER BY
     );
     return response.rows;
   },
-  async getDetailsProject(projectId) {
+  async getDetailsProject(projectSlug) {
     const response = await client.query(
       `
         SELECT 
     p.*,  
     u.pseudo, 
+    u.slug AS user_slug,
     json_agg(
         json_build_object(
             'id', t.id,
@@ -149,10 +160,10 @@ JOIN
 JOIN
     "user" u ON p.user_id = u.id  
 WHERE 
-    p.id = $1  
+    p.slug = $1  
 GROUP BY 
-    p.id, u.pseudo; `,
-      [projectId]
+    p.id, u.pseudo, u.slug; `,
+      [projectSlug]
     );
     return response.rows[0];
   },
