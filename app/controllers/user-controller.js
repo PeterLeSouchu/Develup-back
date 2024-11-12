@@ -30,8 +30,6 @@ const userController = {
     }
 
     const slug = await generateUniqueSlug(pseudo, userDatamapper);
-    console.log('voici le slug :');
-    console.log(slug);
     const passwordHashed = await hashPassword(password);
 
     const OTPcode = otpGenerator.generate(6, {
@@ -99,11 +97,15 @@ const userController = {
       throw new ApiError('Code OTP invalide', 400);
     }
 
+    // By default we put this image avatar
+    const image = ' https://www.w3schools.com/w3images/avatar2.png';
+
     const createdUser = await userDatamapper.save(
       email,
       passwordHashed,
       pseudo,
-      slug
+      slug,
+      image
     );
 
     const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
@@ -203,9 +205,6 @@ const userController = {
   },
   async resetPassword(req, res) {
     const { password, passwordConfirm } = req.body;
-    console.log(
-      `voici le password :${password} et le passwordConfirm: ${passwordConfirm}`
-    );
     const id = req.user.id;
 
     if (password !== passwordConfirm) {
@@ -220,13 +219,14 @@ const userController = {
     const passwordHashed = await hashPassword(password);
 
     await userDatamapper.changePassword(passwordHashed, id);
-    console.log('mot de passe changé avec succes');
     res.json({ message: 'Mot de passe changé' });
   },
   async detailsUser(req, res) {
     const userSlug = req.params.slug;
+    console.log('voici le params slug du controller detailUser');
     console.log(userSlug);
     const result = await userDatamapper.getDetailsUser(userSlug);
+    console.log('voici le resultat de la requete');
     console.log(result);
     res.status(200).json({
       message: "Récupération des données de l'utilisateur réussie",
