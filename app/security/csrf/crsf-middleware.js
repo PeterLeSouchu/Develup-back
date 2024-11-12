@@ -10,6 +10,7 @@ const csrfMiddleware = (req, res, next) => {
           new ApiError('Une erreur est survenue, merci de réessayer', 403)
         );
       }
+      console.log('verif csrf terminé');
       next();
     });
   } catch (error) {

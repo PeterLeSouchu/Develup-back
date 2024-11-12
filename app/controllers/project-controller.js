@@ -33,6 +33,14 @@ const projectController = {
       .status(200)
       .json({ message: 'Récupération de projet(s) réussie', result });
   },
+  async personalProjects(req, res) {
+    const userId = req.user.id;
+    const result = await projectDatamapper.getPersonalProjects(userId);
+    res.status(200).json({
+      message: 'Récupération du/des projet(s) personnel(s) réussie',
+      result,
+    });
+  },
   async detailsProject(req, res) {
     const projectSlug = req.params.slug;
     const result = await projectDatamapper.getDetailsProject(projectSlug);
