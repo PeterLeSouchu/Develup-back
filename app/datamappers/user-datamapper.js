@@ -55,7 +55,7 @@ const userDatamapper = {
   async getDetailsUser(userSlug) {
     const response = await client.query(
       `
-       SELECT 
+SELECT 
     u.*,  
     json_agg(
         json_build_object(
@@ -66,14 +66,16 @@ const userDatamapper = {
     ) AS techno
 FROM 
     "user" u
-LEFT JOIN 
+JOIN 
     user_techno ut ON u.id = ut.user_id
-LEFT JOIN 
+JOIN 
     techno t ON ut.techno_id = t.id
 WHERE 
     u.slug = $1
 GROUP BY 
     u.id;
+
+
       `,
       [userSlug]
     );
