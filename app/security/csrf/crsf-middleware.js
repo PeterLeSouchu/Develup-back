@@ -7,7 +7,10 @@ const csrfMiddleware = (req, res, next) => {
     doubleCsrfProtection(req, res, (err) => {
       if (err) {
         return next(
-          new ApiError('Une erreur est survenue, merci de réessayer', 403)
+          new ApiError(
+            "Une erreur inattendue s'est produite, veuillez réessayer plus tard",
+            403
+          )
         );
       }
       console.log('verif csrf terminé');

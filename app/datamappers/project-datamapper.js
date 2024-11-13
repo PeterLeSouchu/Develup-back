@@ -21,14 +21,15 @@ const projectDatamapper = {
     return response.rows[0];
   },
   async deleteProject(id) {
-    const response = client.query(
+    const response = await client.query(
       `
         DELETE FROM "project"
-WHERE id = $1
-RETURNING *;
+            WHERE id = $1
+            RETURNING *;
         `,
       [id]
     );
+    console.log(response.rows);
     return response.rows[0];
   },
 
