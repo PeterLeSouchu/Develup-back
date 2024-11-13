@@ -48,6 +48,28 @@ const projectController = {
       .status(200)
       .json({ message: 'Récupération des données du projet réussie', result });
   },
+  async deleteProject(req, res) {
+    const projectId = req.params.id;
+    const userId = req.user.id;
+
+    const project = await projectDatamapper.findById(projectId);
+    const isGoodUser = project.user_id === userId;
+
+    if (!isGoodUser) {
+      throw new ApiError(
+        "Une erreur inattendue s'est produite, veuillez réessayer plus tard",
+        403
+      );
+    }
+
+    const projectDeleted = await projectDatamapper.deleteProject(projectId);
+    console.log('voici le projet deleted');
+    console.log(projectDeleted);
+    res.status(200).json({
+      message: 'Suppression de projet réussie',
+      result: projectDeleted,
+    });
+  },
 };
 
 export default projectController;

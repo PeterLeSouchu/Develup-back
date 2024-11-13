@@ -17,7 +17,7 @@ const jwtMiddleware = async (req, _res, next) => {
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const userExist = await userDatamapper.checkById(payload.id);
+    const userExist = await userDatamapper.findById(payload.id);
     if (!userExist) {
       throw new ApiError(
         'Une erreur inattendu est survenue, essayez de vous reconnecter pour résoudre ce problème',
