@@ -36,6 +36,7 @@ privateRouter.get(
 
 privateRouter.delete(
   '/api/project/:id',
+  csrfMiddleware,
   tryCatchMiddleware(projectController.deleteProject)
 );
 
