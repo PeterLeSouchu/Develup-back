@@ -16,7 +16,7 @@ const userController = {
     // We use it to allow us to target the necessary information in Redis in the next method. Instead of using email, we use id to make our app more secure
     const id = uuidv4();
 
-    const userExist = await userDatamapper.checkByEmail(email);
+    const userExist = await userDatamapper.findByEmail(email);
 
     if (userExist) {
       throw new ApiError(
@@ -125,7 +125,7 @@ const userController = {
   },
   async login(req, res) {
     const { email, password } = req.body;
-    const userExist = await userDatamapper.checkByEmail(email);
+    const userExist = await userDatamapper.findByEmail(email);
     if (!userExist) {
       throw new ApiError('Identifiants incorrects', 401);
     }
@@ -175,7 +175,7 @@ const userController = {
   async sendResetLink(req, res) {
     const { email } = req.body;
 
-    const userExist = await userDatamapper.checkByEmail(email);
+    const userExist = await userDatamapper.findByEmail(email);
     if (!userExist) {
       throw new ApiError(
         'Lien de réinitialisation du mot de passe envoyé',
@@ -211,7 +211,7 @@ const userController = {
       throw new ApiError('Les mots de passe ne correspondent pas', 400);
     }
 
-    const userExist = await userDatamapper.checkById(id);
+    const userExist = await userDatamapper.findById(id);
     if (!userExist) {
       throw new ApiError('Une erreur inattendu est survenue', 401);
     }

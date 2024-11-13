@@ -11,6 +11,28 @@ const projectDatamapper = {
     );
     return response.rows[0];
   },
+  async findById(id) {
+    const response = await client.query(
+      `
+        SELECT * FROM "project"
+        WHERE id = $1`,
+      [id]
+    );
+    return response.rows[0];
+  },
+  async deleteProject(id) {
+    const response = await client.query(
+      `
+        DELETE FROM "project"
+            WHERE id = $1
+            RETURNING *;
+        `,
+      [id]
+    );
+    console.log(response.rows);
+    return response.rows[0];
+  },
+
   async searchProjectByTechnoAndRhythm(technos, rhythm) {
     const response = await client.query(
       `
@@ -114,25 +136,30 @@ GROUP BY
   },
   async getDefaultProjects() {
     const response = await client.query(
-      `SELECT 
+      `
+SELECT 
     p.*,  
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 GROUP BY 
     p.id
 ORDER BY 
     p.created_at DESC;
+
 `
     );
     return response.rows;
@@ -141,29 +168,33 @@ ORDER BY
     const response = await client.query(
       `
 SELECT 
-    p.*,
+    p.*, 
     u.id AS user_id, 
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 JOIN 
     "user" u ON p.user_id = u.id
-    
-    WHERE u.id = $1
+WHERE 
+    u.id = $1
 GROUP BY 
     p.id, u.id
 ORDER BY 
     p.created_at DESC;
+
 `,
       [userId]
     );
@@ -172,29 +203,34 @@ ORDER BY
   async getDetailsProject(projectSlug) {
     const response = await client.query(
       `
-        SELECT 
+       SELECT 
     p.*,  
     u.pseudo, 
     u.slug AS user_slug,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image
-        )
+    COALESCE(
+        jsonb_agg(
+            DISTINCT jsonb_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::jsonb
     ) AS techno
 FROM 
     project p
 JOIN 
-    project_techno pt ON p.id = pt.project_id
-JOIN 
-    techno t ON pt.techno_id = t.id
-JOIN
     "user" u ON p.user_id = u.id  
+LEFT JOIN 
+    project_techno pt ON p.id = pt.project_id
+LEFT JOIN 
+    techno t ON pt.techno_id = t.id
 WHERE 
     p.slug = $1  
 GROUP BY 
-    p.id, u.pseudo, u.slug; `,
+    p.id, u.pseudo, u.slug;
+
+ `,
       [projectSlug]
     );
     return response.rows[0];

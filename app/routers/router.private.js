@@ -34,6 +34,12 @@ privateRouter.get(
   tryCatchMiddleware(projectController.detailsProject)
 );
 
+privateRouter.delete(
+  '/api/project/:id',
+  csrfMiddleware,
+  tryCatchMiddleware(projectController.deleteProject)
+);
+
 privateRouter.get(
   '/api/user/:slug',
   tryCatchMiddleware(userController.detailsUser)

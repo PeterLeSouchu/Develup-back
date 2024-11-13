@@ -11,7 +11,7 @@ const userDatamapper = {
     );
     return response.rows[0];
   },
-  async checkByEmail(email) {
+  async findByEmail(email) {
     const response = await client.query(
       `
             SELECT * FROM "user" 
@@ -21,7 +21,7 @@ const userDatamapper = {
     );
     return response.rows[0];
   },
-  async checkById(id) {
+  async findById(id) {
     const response = await client.query(
       `
             SELECT * FROM "user" 
