@@ -42,15 +42,20 @@ export const cguSchema = Joi.boolean().valid(true).required().messages({
   'any.required': "Vous devez accepter les conditions générales d'utilisation.",
 });
 
-export const titleSchema = Joi.string().min(1).max(30).required().messages({
-  'string.min': 'Le titre est requis',
+// Here we use any. instead string. because data is not in json but multipart/formdata
+export const titleSchema = Joi.string().required().min(1).max(30).messages({
+  'any.required': 'Le titre est requis',
   'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
 });
 
-export const rhythmSchema = Joi.string().min(1).required().messages({
-  'string.min': 'Le rythme est requis',
+export const rhythmSchema = Joi.string().required().min(1).messages({
+  'any.required': 'Le rythme est requis',
 });
 
-export const descriptionSchema = Joi.string().min(1).required().messages({
-  'string.min': 'La description est requise',
+export const descriptionSchema = Joi.string().required().min(1).messages({
+  'any.required': 'La description est requise',
 });
+
+export const technoSchema = Joi.string();
+
+export const imageSchema = Joi.any().optional();

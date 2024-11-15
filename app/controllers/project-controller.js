@@ -71,11 +71,8 @@ const projectController = {
     });
   },
   async createProject(req, res) {
-    // console.log(req.body.technoSelected);
-    console.log(req.body);
     const techno = JSON.parse(req.body.techno);
-    console.log(techno);
-    return 'ok';
+    res.status(200).json({ message: 'tout est ok' });
   },
 };
 
