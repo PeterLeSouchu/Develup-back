@@ -5,13 +5,11 @@ import userDatamapper from '../../datamappers/user-datamapper.js';
 const jwtMiddleware = async (req, _res, next) => {
   try {
     const token = req.cookies.jwt;
+
     if (!token) {
       console.log('pas de token');
       return next(
-        new ApiError(
-          'Une erreur inattendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
-          401
-        )
+        new ApiError('Votre session a expiré, veuillez vous reconnecter', 401)
       );
     }
 

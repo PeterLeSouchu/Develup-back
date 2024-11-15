@@ -134,11 +134,12 @@ const userController = {
 
     const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
     if (!isGoodPassword) {
+      s;
       throw new ApiError('Identifiants incorrects', 401);
     }
 
     const userToken = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
-      expiresIn: '10m',
+      expiresIn: '1h',
     });
 
     res.cookie('jwt', userToken, {
