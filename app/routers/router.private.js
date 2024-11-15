@@ -5,6 +5,12 @@ import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import userController from '../controllers/user-controller.js';
 import projectController from '../controllers/project-controller.js';
 import technologieController from '../controllers/technologie-controller.js';
+import projectSchema from '../validation/schemas/form-schema/project-schema.js';
+import validateSchema from '../validation/validate-middleware.js';
+import { uploadMiddleware } from '../upload/multer-config.js';
+import ApiError from '../errors/error.js';
+import multer from 'multer';
+
 const privateRouter = Router();
 
 privateRouter.post('/api/logout', tryCatchMiddleware(userController.logout));
@@ -17,6 +23,13 @@ privateRouter.post(
 privateRouter.get(
   '/api/projects',
   tryCatchMiddleware(projectController.defaultProjects)
+);
+
+privateRouter.post(
+  '/api/project',
+  uploadMiddleware,
+  validateSchema(projectSchema),
+  tryCatchMiddleware(projectController.createProject)
 );
 
 privateRouter.get(
@@ -44,4 +57,5 @@ privateRouter.get(
   '/api/user/:slug',
   tryCatchMiddleware(userController.detailsUser)
 );
+
 export default privateRouter;

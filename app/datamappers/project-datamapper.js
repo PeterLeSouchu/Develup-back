@@ -38,19 +38,21 @@ const projectDatamapper = {
       `
          SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
     p.id IN (
@@ -74,28 +76,31 @@ GROUP BY
     const response = await client.query(
       `SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+   COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
-    p.rhythm = $1  -- Filtrer les projets par rythme
+    p.rhythm = $1  
 GROUP BY 
     p.id;
 
 `,
       [rhythm]
     );
+    console.log(response.rows[0]);
     return response.rows;
   },
   async searchProjectByTechno(technos) {
@@ -103,19 +108,21 @@ GROUP BY
       `
           SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
     p.id IN (

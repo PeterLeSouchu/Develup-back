@@ -41,3 +41,16 @@ export const otpSchema = Joi.string()
 export const cguSchema = Joi.boolean().valid(true).required().messages({
   'any.required': "Vous devez accepter les conditions générales d'utilisation.",
 });
+
+export const titleSchema = Joi.string().min(1).max(30).required().messages({
+  'string.min': 'Le titre est requis',
+  'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
+});
+
+export const rhythmSchema = Joi.string().min(1).required().messages({
+  'string.min': 'Le rythme est requis',
+});
+
+export const descriptionSchema = Joi.string().min(1).required().messages({
+  'string.min': 'La description est requise',
+});
