@@ -18,5 +18,6 @@ export function errorHandler(error, _req, res, _next) {
   );
 
   // If it's not ApiError (our custom error class), we send basic response to make our app more secure (don't send info to the client).
-  return res.status(status).json({ message });
+  res.status(status).json({ message });
+  return console.log('reponse envoyé');
 }
