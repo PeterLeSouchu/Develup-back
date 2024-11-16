@@ -25,47 +25,13 @@ privateRouter.get(
   tryCatchMiddleware(projectController.defaultProjects)
 );
 
-// privateRouter.post(
-//   '/api/project',
-//   uploadMiddleware,
-//   (req, res, next) => {
-//     console.log(req.file);
-//     next();
-//   },
-//   function (req, res, next) {
-//     cloudinary.uploader.upload(req.file.path, function (err, result) {
-//       if (err) {
-//         console.log(err);
-//         return res.status(500).json({ message: 'problem' });
-//       }
-//       console.log(result);
-
-//       // to delete image from uploads
-//       fs.unlink(req.file.path, (err) => {
-//         if (err) {
-//           console.error(`Error removing file: ${err}`);
-//           return;
-//         }
-
-//         console.log(`File ${req.file.path} has been successfully removed.`);
-//       });
-
-//       return res.status(200).json({ message: 'ok all is to good' });
-//     });
-//   },
-//   validateSchema(projectSchema),
-//   tryCatchMiddleware(projectController.createProject)
-// );
-
 privateRouter.post(
   '/api/project',
   uploadMiddleware,
-  (req, res) => {
+  (req, res, next) => {
     if (!req.file) {
-      return res.status(400).send('Aucun fichier téléchargé');
+      return next();
     }
-
-    // Envoyer l'image directement à Cloudinary
     cloudinary.uploader
       .upload_stream((error, result) => {
         if (error) {
@@ -73,10 +39,8 @@ privateRouter.post(
             .status(500)
             .send({ message: "Erreur lors de l'upload sur Cloudinary" });
         }
-        res.send({
-          message: 'Image téléchargée avec succès!',
-          url: result.secure_url,
-        });
+        req.urlImage = result.secure_url;
+        return next();
       })
       .end(req.file.buffer);
   },

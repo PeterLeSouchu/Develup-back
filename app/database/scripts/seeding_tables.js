@@ -53,7 +53,6 @@ async function seedingTechno() {
         techno.name,
         techno.image,
       ]);
-      console.log(`techno ${techno.name} inserted`);
     }
   } catch (error) {
     console.log(error);

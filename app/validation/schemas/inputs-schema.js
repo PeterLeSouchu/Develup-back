@@ -42,7 +42,7 @@ export const cguSchema = Joi.boolean().valid(true).required().messages({
   'any.required': "Vous devez accepter les conditions générales d'utilisation.",
 });
 
-// Here we use any. instead string. because data is not in json but multipart/formdata
+// Here we use any. instead string. because data is in multipart/formdata
 export const titleSchema = Joi.string().required().min(1).max(30).messages({
   'any.required': 'Le titre est requis',
   'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',

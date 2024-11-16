@@ -4,9 +4,30 @@ const projectDatamapper = {
   async findBySlug(slug) {
     const response = await client.query(
       `
-                  SELECT * FROM "project" 
-                    WHERE "slug" = $1
-                  ;`,
+                  
+SELECT 
+    p.*, 
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
+    ) AS techno
+FROM 
+    project p
+LEFT JOIN 
+    project_techno pt ON p.id = pt.project_id
+LEFT JOIN 
+    techno t ON pt.techno_id = t.id
+WHERE 
+    p.slug = $1
+GROUP BY 
+    p.id
+`,
       [slug]
     );
     return response.rows[0];
@@ -14,8 +35,29 @@ const projectDatamapper = {
   async findById(id) {
     const response = await client.query(
       `
-        SELECT * FROM "project"
-        WHERE id = $1`,
+SELECT 
+    p.*, 
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
+    ) AS techno
+FROM 
+    project p
+LEFT JOIN 
+    project_techno pt ON p.id = pt.project_id
+LEFT JOIN 
+    techno t ON pt.techno_id = t.id
+WHERE 
+    p.id = $1
+GROUP BY 
+    p.id
+`,
       [id]
     );
     return response.rows[0];
@@ -29,7 +71,17 @@ const projectDatamapper = {
         `,
       [id]
     );
-    console.log(response.rows);
+    return response.rows[0];
+  },
+  async createProject(title, rhythm, description, image, slug, userId) {
+    const response = await client.query(
+      `
+        INSERT INTO "project" (title, rhythm, description, image, slug, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *;
+        `,
+      [title, rhythm, description, image, slug, userId]
+    );
     return response.rows[0];
   },
 
@@ -100,7 +152,6 @@ GROUP BY
 `,
       [rhythm]
     );
-    console.log(response.rows[0]);
     return response.rows;
   },
   async searchProjectByTechno(technos) {
