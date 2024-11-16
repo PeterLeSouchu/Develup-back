@@ -10,6 +10,16 @@ const technologieDatamapper = {
     );
     return response.rows;
   },
+  async relateTechnoToProject(projectId, technoId) {
+    const response = await client.query(
+      `
+      INSERT INTO "project_techno" (project_id, techno_id)
+      VALUES ($1, $2)
+      `,
+      [projectId, technoId]
+    );
+    return response.rows[0];
+  },
 };
 
 export default technologieDatamapper;

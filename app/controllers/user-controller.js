@@ -224,11 +224,7 @@ const userController = {
   },
   async detailsUser(req, res) {
     const userSlug = req.params.slug;
-    console.log('voici le params slug du controller detailUser');
-    console.log(userSlug);
     const result = await userDatamapper.getDetailsUser(userSlug);
-    console.log('voici le resultat de la requete');
-    console.log(result);
     res.status(200).json({
       message: "Récupération des données de l'utilisateur réussie",
       result,

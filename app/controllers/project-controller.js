@@ -1,5 +1,7 @@
 import ApiError from '../errors/error.js';
 import projectDatamapper from '../datamappers/project-datamapper.js';
+import technologieDatamapper from '../datamappers/technologie-datamapper.js';
+import generateUniqueSlug from '../utils/generate-slug.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -63,16 +65,51 @@ const projectController = {
     }
 
     const projectDeleted = await projectDatamapper.deleteProject(projectId);
-    console.log('voici le projet deleted');
-    console.log(projectDeleted);
+
     res.status(200).json({
       message: 'Suppression de projet réussie',
       result: projectDeleted,
     });
   },
   async createProject(req, res) {
+    const { title, rhythm, description } = req.body;
     const techno = JSON.parse(req.body.techno);
-    res.status(200).json({ message: 'tout est ok' });
+    const slug = await generateUniqueSlug(title, projectDatamapper);
+    const userId = req.user.id;
+    console.log(slug);
+
+    const image =
+      req.urlImage ||
+      'https://res.cloudinary.com/deacf8wk3/image/upload/v1731715170/Tiny_programmers_on_big_laptop_writing_script_ffv69y.jpg';
+
+    console.log('les const sont passées');
+
+    const createdProject = await projectDatamapper.createProject(
+      title,
+      rhythm,
+      description,
+      image,
+      slug,
+      userId
+    );
+    console.log('voici le projet créé');
+    console.log(createdProject);
+
+    const projectId = createdProject.id;
+
+    // make this after create project
+    if (techno.length > 0) {
+      for (const element of techno) {
+        await technologieDatamapper.relateTechnoToProject(
+          projectId,
+          element.id
+        );
+      }
+    }
+
+    const project = await projectDatamapper.findById(projectId);
+
+    res.status(200).json({ message: 'tout est ok', image, result: project });
   },
 };
 
