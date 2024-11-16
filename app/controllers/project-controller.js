@@ -2,6 +2,7 @@ import ApiError from '../errors/error.js';
 import projectDatamapper from '../datamappers/project-datamapper.js';
 import technologieDatamapper from '../datamappers/technologie-datamapper.js';
 import generateUniqueSlug from '../utils/generate-slug.js';
+import cloudinary from '../upload/cloudinary-config.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -55,6 +56,8 @@ const projectController = {
     const userId = req.user.id;
 
     const project = await projectDatamapper.findById(projectId);
+    console.log('voici le projet a supprimer');
+    console.log(project);
     const isGoodUser = project.user_id === userId;
 
     if (!isGoodUser) {
@@ -66,6 +69,10 @@ const projectController = {
 
     const projectDeleted = await projectDatamapper.deleteProject(projectId);
 
+    const imageId = projectDeleted.image_id;
+
+    await cloudinary.uploader.destroy(imageId);
+
     res.status(200).json({
       message: 'Suppression de projet réussie',
       result: projectDeleted,
@@ -76,12 +83,10 @@ const projectController = {
     const techno = JSON.parse(req.body.techno);
     const slug = await generateUniqueSlug(title, projectDatamapper);
     const userId = req.user.id;
-    console.log(slug);
-
     const image =
       req.urlImage ||
       'https://res.cloudinary.com/deacf8wk3/image/upload/v1731715170/Tiny_programmers_on_big_laptop_writing_script_ffv69y.jpg';
-
+    const imageId = req.imageId;
     console.log('les const sont passées');
 
     const createdProject = await projectDatamapper.createProject(
@@ -89,11 +94,10 @@ const projectController = {
       rhythm,
       description,
       image,
+      imageId,
       slug,
       userId
     );
-    console.log('voici le projet créé');
-    console.log(createdProject);
 
     const projectId = createdProject.id;
 
