@@ -39,7 +39,9 @@ privateRouter.post(
             .status(500)
             .send({ message: "Erreur lors de l'upload sur Cloudinary" });
         }
+        console.log(result.public_id);
         req.urlImage = result.secure_url;
+        req.imageId = result.public_id;
         return next();
       })
       .end(req.file.buffer);

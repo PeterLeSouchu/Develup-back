@@ -73,14 +73,22 @@ GROUP BY
     );
     return response.rows[0];
   },
-  async createProject(title, rhythm, description, image, slug, userId) {
+  async createProject(
+    title,
+    rhythm,
+    description,
+    image,
+    imageId,
+    slug,
+    userId
+  ) {
     const response = await client.query(
       `
-        INSERT INTO "project" (title, rhythm, description, image, slug, user_id)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO "project" (title, rhythm, description, image, image_id, slug, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING *;
         `,
-      [title, rhythm, description, image, slug, userId]
+      [title, rhythm, description, image, imageId, slug, userId]
     );
     return response.rows[0];
   },
