@@ -2,9 +2,6 @@ import cloudinary from './cloudinary-config.js';
 
 export const cloudinaryMiddleware = (req, res, next) => {
   if (!req.file) {
-    // we create this variable to know if user has deleted image, in order to delete image from db and cloudinary, but we use it only in edit project controller and edit profile controller
-    console.log('image deleted');
-    req.deletedImage = true;
     return next();
   }
   cloudinary.uploader
@@ -16,6 +13,7 @@ export const cloudinaryMiddleware = (req, res, next) => {
       }
       req.urlImage = result.secure_url;
       req.imageId = result.public_id;
+      console.log('image inséré dans cloudinary');
       return next();
     })
     .end(req.file.buffer);
