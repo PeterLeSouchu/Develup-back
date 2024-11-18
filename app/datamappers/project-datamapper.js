@@ -92,7 +92,6 @@ GROUP BY
     );
     return response.rows[0];
   },
-
   async searchProjectByTechnoAndRhythm(technos, rhythm) {
     const response = await client.query(
       `
@@ -266,7 +265,7 @@ ORDER BY
     );
     return response.rows;
   },
-  async getDetailsProject(projectSlug) {
+  async getDetailsProjectBySlug(projectSlug) {
     const response = await client.query(
       `
        SELECT 
@@ -300,6 +299,61 @@ GROUP BY
       [projectSlug]
     );
     return response.rows[0];
+  },
+  async editTitleProject(title, newProjectSlug, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            title = $1,
+            slug = $2
+        WHERE 
+            id = $3
+            RETURNING * ;
+
+        `,
+      [title, newProjectSlug, projectId]
+    );
+  },
+  async editRhythmProject(rhythm, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            rhythm = $1
+        WHERE 
+            id = $2 ;
+
+        `,
+      [rhythm, projectId]
+    );
+  },
+  async editDescriptionProject(description, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            description = $1
+        WHERE 
+            id = $2 ;
+
+        `,
+      [description, projectId]
+    );
+  },
+  async editImageProject(image, imageId, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            image = $1,
+            image_id = $2
+        WHERE 
+            id = $3 ;
+
+        `,
+      [image, imageId, projectId]
+    );
   },
 };
 

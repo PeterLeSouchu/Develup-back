@@ -5,11 +5,11 @@ import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import userController from '../controllers/user-controller.js';
 import projectController from '../controllers/project-controller.js';
 import technologieController from '../controllers/technologie-controller.js';
-import projectSchema from '../validation/schemas/form-schema/project-schema.js';
+import projectSchemaCreated from '../validation/schemas/form-schema/project-created-schema.js';
+import projectSchemaEditeded from '../validation/schemas/form-schema/project-edited-schema.js';
 import validateSchema from '../validation/validate-middleware.js';
 import { uploadMiddleware } from '../upload/multer-config.js';
-import cloudinary from '../upload/cloudinary-config.js';
-import fs from 'node:fs';
+import { cloudinaryMiddleware } from '../upload/cloudinary-middleware.js';
 
 const privateRouter = Router();
 
@@ -27,27 +27,20 @@ privateRouter.get(
 
 privateRouter.post(
   '/api/project',
+  csrfMiddleware,
   uploadMiddleware,
-  (req, res, next) => {
-    if (!req.file) {
-      return next();
-    }
-    cloudinary.uploader
-      .upload_stream((error, result) => {
-        if (error) {
-          return res
-            .status(500)
-            .send({ message: "Erreur lors de l'upload sur Cloudinary" });
-        }
-        console.log(result.public_id);
-        req.urlImage = result.secure_url;
-        req.imageId = result.public_id;
-        return next();
-      })
-      .end(req.file.buffer);
-  },
-  validateSchema(projectSchema),
+  cloudinaryMiddleware,
+  validateSchema(projectSchemaCreated),
   tryCatchMiddleware(projectController.createProject)
+);
+
+privateRouter.patch(
+  '/api/project/:slug',
+  csrfMiddleware,
+  uploadMiddleware,
+  cloudinaryMiddleware,
+  validateSchema(projectSchemaEditeded),
+  tryCatchMiddleware(projectController.editProject)
 );
 
 privateRouter.get(
@@ -62,7 +55,7 @@ privateRouter.get(
 
 privateRouter.get(
   '/api/project/:slug',
-  tryCatchMiddleware(projectController.detailsProject)
+  tryCatchMiddleware(projectController.detailsProjectBySlug)
 );
 
 privateRouter.delete(
