@@ -41,3 +41,37 @@ export const otpSchema = Joi.string()
 export const cguSchema = Joi.boolean().valid(true).required().messages({
   'any.required': "Vous devez accepter les conditions générales d'utilisation.",
 });
+
+export const titleSchemaCreated = Joi.string()
+  .required()
+  .min(1)
+  .max(30)
+  .messages({
+    'string.empty': 'le titre est requis',
+    'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
+  });
+
+export const titleSchemaEdited = Joi.string().optional().max(30).messages({
+  'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
+});
+
+export const rhythmSchemaCreated = Joi.string().required().min(1).messages({
+  'string.empty': 'le rythme est requis',
+});
+
+export const rhythmSchemaEdited = Joi.string().optional();
+
+export const descriptionSchemaCreated = Joi.string()
+  .required()
+  .min(1)
+  .messages({
+    'string.empty': 'la description est requise',
+  });
+
+export const descriptionSchemaEdited = Joi.string().optional();
+
+// Here it's a array of objet (a object is a tehcno with id, name and image attribute) and this one arrive without being jsonStringify so we use Joi.string
+export const technoSchema = Joi.string();
+
+// here when user send no image, it's a special data so we just make Joi.any, and when user send image multer already filtered type and size + there's is a zod verification for image in front
+export const imageSchema = Joi.any().optional();

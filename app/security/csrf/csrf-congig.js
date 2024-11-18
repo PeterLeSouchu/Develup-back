@@ -8,7 +8,10 @@ const doubleCsrfOptions = {
     secure: false, // If we make it true, we have to prefix the cookie with  : '__Host-'
     httpOnly: true,
   },
-  getTokenFromRequest: (req) => req.headers['x-csrf-token'], // A function that returns the token from the request
+  getTokenFromRequest: (req) => {
+    // Récupérer le token dans les en-têtes ou dans req.body
+    return req.headers['x-csrf-token'] || req.body?.csrfToken;
+  },
 };
 
 const {
