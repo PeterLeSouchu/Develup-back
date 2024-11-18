@@ -25,6 +25,7 @@ CREATE TABLE "user" (
     "type" TEXT,
     "description" TEXT,
     "image" TEXT,
+    "image_id" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ
 );
@@ -35,7 +36,8 @@ CREATE TABLE "project" (
     "rhythm" TEXT NOT NULL,
     "slug" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
+    "image" TEXT,
+    "image_id" TEXT,
     "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ

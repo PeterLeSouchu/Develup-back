@@ -4,9 +4,30 @@ const projectDatamapper = {
   async findBySlug(slug) {
     const response = await client.query(
       `
-                  SELECT * FROM "project" 
-                    WHERE "slug" = $1
-                  ;`,
+                  
+SELECT 
+    p.*, 
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
+    ) AS techno
+FROM 
+    project p
+LEFT JOIN 
+    project_techno pt ON p.id = pt.project_id
+LEFT JOIN 
+    techno t ON pt.techno_id = t.id
+WHERE 
+    p.slug = $1
+GROUP BY 
+    p.id
+`,
       [slug]
     );
     return response.rows[0];
@@ -14,8 +35,29 @@ const projectDatamapper = {
   async findById(id) {
     const response = await client.query(
       `
-        SELECT * FROM "project"
-        WHERE id = $1`,
+SELECT 
+    p.*, 
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
+    ) AS techno
+FROM 
+    project p
+LEFT JOIN 
+    project_techno pt ON p.id = pt.project_id
+LEFT JOIN 
+    techno t ON pt.techno_id = t.id
+WHERE 
+    p.id = $1
+GROUP BY 
+    p.id
+`,
       [id]
     );
     return response.rows[0];
@@ -29,28 +71,47 @@ const projectDatamapper = {
         `,
       [id]
     );
-    console.log(response.rows);
     return response.rows[0];
   },
-
+  async createProject(
+    title,
+    rhythm,
+    description,
+    image,
+    imageId,
+    slug,
+    userId
+  ) {
+    const response = await client.query(
+      `
+        INSERT INTO "project" (title, rhythm, description, image, image_id, slug, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING *;
+        `,
+      [title, rhythm, description, image, imageId, slug, userId]
+    );
+    return response.rows[0];
+  },
   async searchProjectByTechnoAndRhythm(technos, rhythm) {
     const response = await client.query(
       `
          SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
     p.id IN (
@@ -74,22 +135,24 @@ GROUP BY
     const response = await client.query(
       `SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+   COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
-    p.rhythm = $1  -- Filtrer les projets par rythme
+    p.rhythm = $1  
 GROUP BY 
     p.id;
 
@@ -103,19 +166,21 @@ GROUP BY
       `
           SELECT 
     p.*,
-    json_agg(
-        json_build_object(
-            'id', t.id,
-            'name', t.name,
-            'image', t.image,
-            'created_at', t.created_at
-        )
+    COALESCE(
+        json_agg(
+            json_build_object(
+                'id', t.id,
+                'name', t.name,
+                'image', t.image
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'::json
     ) AS techno
 FROM 
     project p
-JOIN 
+LEFT JOIN 
     project_techno pt ON p.id = pt.project_id
-JOIN 
+LEFT JOIN 
     techno t ON pt.techno_id = t.id
 WHERE 
     p.id IN (
@@ -200,7 +265,7 @@ ORDER BY
     );
     return response.rows;
   },
-  async getDetailsProject(projectSlug) {
+  async getDetailsProjectBySlug(projectSlug) {
     const response = await client.query(
       `
        SELECT 
@@ -234,6 +299,61 @@ GROUP BY
       [projectSlug]
     );
     return response.rows[0];
+  },
+  async editTitleProject(title, newProjectSlug, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            title = $1,
+            slug = $2
+        WHERE 
+            id = $3
+            RETURNING * ;
+
+        `,
+      [title, newProjectSlug, projectId]
+    );
+  },
+  async editRhythmProject(rhythm, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            rhythm = $1
+        WHERE 
+            id = $2 ;
+
+        `,
+      [rhythm, projectId]
+    );
+  },
+  async editDescriptionProject(description, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            description = $1
+        WHERE 
+            id = $2 ;
+
+        `,
+      [description, projectId]
+    );
+  },
+  async editImageProject(image, imageId, projectId) {
+    await client.query(
+      `
+        UPDATE "project"
+        SET 
+            image = $1,
+            image_id = $2
+        WHERE 
+            id = $3 ;
+
+        `,
+      [image, imageId, projectId]
+    );
   },
 };
 

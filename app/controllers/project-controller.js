@@ -1,5 +1,8 @@
 import ApiError from '../errors/error.js';
 import projectDatamapper from '../datamappers/project-datamapper.js';
+import technologieDatamapper from '../datamappers/technologie-datamapper.js';
+import generateUniqueSlug from '../utils/generate-slug.js';
+import cloudinary from '../upload/cloudinary-config.js';
 
 const projectController = {
   async searchProject(req, res) {
@@ -41,9 +44,16 @@ const projectController = {
       result,
     });
   },
-  async detailsProject(req, res) {
+  async detailsProjectBySlug(req, res) {
     const projectSlug = req.params.slug;
-    const result = await projectDatamapper.getDetailsProject(projectSlug);
+    const result = await projectDatamapper.getDetailsProjectBySlug(projectSlug);
+    res
+      .status(200)
+      .json({ message: 'Récupération des données du projet réussie', result });
+  },
+  async detailsProjectById(req, res) {
+    const projectId = req.params.id;
+    const result = await projectDatamapper.getDetailsProjectById(projectId);
     res
       .status(200)
       .json({ message: 'Récupération des données du projet réussie', result });
@@ -63,12 +73,128 @@ const projectController = {
     }
 
     const projectDeleted = await projectDatamapper.deleteProject(projectId);
-    console.log('voici le projet deleted');
-    console.log(projectDeleted);
+
+    const imageId = projectDeleted.image_id;
+
+    if (imageId) {
+      await cloudinary.uploader.destroy(imageId);
+    }
+
     res.status(200).json({
       message: 'Suppression de projet réussie',
       result: projectDeleted,
     });
+  },
+  async createProject(req, res) {
+    const { title, rhythm, description } = req.body;
+    const techno = JSON.parse(req.body.techno);
+    const slug = await generateUniqueSlug(title, projectDatamapper);
+    const userId = req.user.id;
+    // Image and imageId can be undefined but it's not a problem
+    const image = req.urlImage;
+    const imageId = req.imageId;
+    const createdProject = await projectDatamapper.createProject(
+      title,
+      rhythm,
+      description,
+      image,
+      imageId,
+      slug,
+      userId
+    );
+
+    const projectId = createdProject.id;
+
+    // make this after create project
+    if (techno.length > 0) {
+      for (const element of techno) {
+        await technologieDatamapper.relateTechnoToProject(
+          projectId,
+          element.id
+        );
+      }
+    }
+
+    const project = await projectDatamapper.findById(projectId);
+
+    res.status(200).json({ message: 'tout est ok', image, result: project });
+  },
+  async editProject(req, res) {
+    const projectSlug = req.params.slug;
+
+    const { title, rhythm, description } = req.body;
+    const technos = req.body.techno ? JSON.parse(req.body.techno) : undefined;
+    const image = req.urlImage;
+    const imageId = req.imageId;
+    const isImageDeleted = req.deletedImage;
+
+    const oldProject = await projectDatamapper.findBySlug(projectSlug);
+    const projectId = oldProject.id;
+    const userId = req.user.id;
+
+    const isGoodUser = oldProject.user_id === userId;
+
+    if (!isGoodUser) {
+      throw new ApiError(
+        "Une erreur inattendue s'est produite, veuillez réessayer plus tard",
+        403
+      );
+    }
+
+    if (title) {
+      const newProjectSlug = await generateUniqueSlug(title, projectDatamapper);
+
+      await projectDatamapper.editTitleProject(
+        title,
+        newProjectSlug,
+        projectId
+      );
+    }
+
+    if (rhythm) {
+      await projectDatamapper.editRhythmProject(rhythm, projectId);
+    }
+
+    if (description) {
+      await projectDatamapper.editDescriptionProject(description, projectId);
+    }
+
+    if (image && imageId) {
+      // here we insert new image and imageId in our DB and we delete  older image in cloudinary
+      await projectDatamapper.editImageProject(image, imageId, projectId);
+      await cloudinary.uploader.destroy(oldProject.image_id);
+    }
+
+    if (isImageDeleted) {
+      await projectDatamapper.editImageProject(undefined, undefined, projectId);
+      await cloudinary.uploader.destroy(oldProject.image_id);
+    }
+
+    if (technos) {
+      const oldTechno = await technologieDatamapper.getAllTechnoFromProject(
+        projectId
+      );
+
+      const newTechnoId = technos.map((tech) => tech.id);
+      const oldTechnoId = oldTechno.map((tech) => tech.id);
+
+      const technoToAdd = technos.filter(
+        (newTech) => !oldTechnoId.includes(newTech.id)
+      );
+      const technoToRemove = oldTechno.filter(
+        (tech) => !newTechnoId.includes(tech.id)
+      );
+
+      for (const techno of technoToAdd) {
+        await technologieDatamapper.relateTechnoToProject(projectId, techno.id);
+      }
+      for (const techno of technoToRemove) {
+        await technologieDatamapper.deleteTechnoToProject(projectId, techno.id);
+      }
+    }
+
+    const editedProject = await projectDatamapper.findById(oldProject.id);
+    return res.status(200).json({ message: 'all ok', result: editedProject });
   },
 };
 
