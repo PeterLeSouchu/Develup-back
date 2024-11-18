@@ -48,7 +48,7 @@ const newTechnos = [
 
 async function seedingTechno() {
   try {
-    for (const techno of newTechnos) {
+    for (const techno of technos) {
       await client.query('INSERT INTO techno (name, image) VALUES ($1, $2)', [
         techno.name,
         techno.image,

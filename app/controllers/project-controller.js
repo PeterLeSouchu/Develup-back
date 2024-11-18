@@ -161,13 +161,18 @@ const projectController = {
 
     if (image && imageId) {
       // here we insert new image and imageId in our DB and we delete  older image in cloudinary
+
       await projectDatamapper.editImageProject(image, imageId, projectId);
-      await cloudinary.uploader.destroy(oldProject.image_id);
+
+      if (oldProject.image_id) {
+        await cloudinary.uploader.destroy(oldProject.image_id);
+      }
     }
 
     if (isImageDeleted) {
       await projectDatamapper.editImageProject(undefined, undefined, projectId);
       await cloudinary.uploader.destroy(oldProject.image_id);
+      console.log('image supprimé de cloudinary');
     }
 
     if (technos) {
