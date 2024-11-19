@@ -44,6 +44,14 @@ const projectController = {
       result,
     });
   },
+  async personalProfile(req, res) {
+    const userId = req.user.id;
+    const result = await projectDatamapper.getPersonalProfile(userId);
+    res.status(200).json({
+      message: 'Récupération des infos personnelles réussies',
+      result,
+    });
+  },
   async detailsProjectBySlug(req, res) {
     const projectSlug = req.params.slug;
     const result = await projectDatamapper.getDetailsProjectBySlug(projectSlug);
