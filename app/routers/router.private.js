@@ -43,9 +43,23 @@ privateRouter.patch(
   tryCatchMiddleware(projectController.editProject)
 );
 
+privateRouter.patch(
+  '/api/edit-profile-image',
+  csrfMiddleware,
+  uploadMiddleware,
+  cloudinaryMiddleware,
+  tryCatchMiddleware(userController.editProfileImage)
+);
+
 privateRouter.get(
   '/api/personal-projects',
+  csrfMiddleware,
   tryCatchMiddleware(projectController.personalProjects)
+);
+
+privateRouter.get(
+  '/api/personal-profile',
+  tryCatchMiddleware(projectController.personalProfile)
 );
 
 privateRouter.get(

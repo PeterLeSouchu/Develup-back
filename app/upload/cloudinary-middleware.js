@@ -13,7 +13,7 @@ export const cloudinaryMiddleware = (req, res, next) => {
       }
       req.urlImage = result.secure_url;
       req.imageId = result.public_id;
-      console.log('image inséré dans cloudinary');
+
       return next();
     })
     .end(req.file.buffer);

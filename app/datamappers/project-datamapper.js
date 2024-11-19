@@ -265,6 +265,43 @@ ORDER BY
     );
     return response.rows;
   },
+  async getPersonalProfile(userId) {
+    const response = await client.query(
+      `
+
+      SELECT 
+      u.email, 
+      u.pseudo, 
+      u.description, 
+      u.type, 
+      u.image, 
+      COALESCE(
+          json_agg(
+              json_build_object(
+                  'id', t.id,
+                  'name', t.name,
+                  'image', t.image
+              )
+          ) FILTER (WHERE t.id IS NOT NULL), 
+          '[]'::json
+      ) AS techno
+  FROM 
+      "user" u
+  LEFT JOIN 
+      user_techno ut ON u.id = ut.user_id
+  LEFT JOIN 
+      techno t ON ut.techno_id = t.id
+  WHERE 
+      u.id = $1
+  GROUP BY 
+       u.id
+;
+
+`,
+      [userId]
+    );
+    return response.rows[0];
+  },
   async getDetailsProjectBySlug(projectSlug) {
     const response = await client.query(
       `

@@ -8,6 +8,7 @@ import { redis } from '../database/redis.js';
 import { v4 as uuidv4 } from 'uuid';
 import otpGenerator from 'otp-generator';
 import generateUniqueSlug from '../utils/generate-slug.js';
+import cloudinary from '../upload/cloudinary-config.js';
 
 const userController = {
   async sendOTP(req, res) {
@@ -227,6 +228,30 @@ const userController = {
     const result = await userDatamapper.getDetailsUser(userSlug);
     res.status(200).json({
       message: "Récupération des données de l'utilisateur réussie",
+      result,
+    });
+  },
+  async editProfileImage(req, res) {
+    const userId = req.user.id;
+    const image = req.urlImage;
+    const imageId = req.imageId;
+    const isImageDeleted = req.deletedImage;
+    console.log("est-ce que l'image a ete supprimé ?");
+    console.log(isImageDeleted);
+    const user = await userDatamapper.findById(userId);
+
+    if (isImageDeleted) {
+      await userDatamapper.editProfileImage(undefined, undefined, userId);
+      await cloudinary.uploader.destroy(user.image_id);
+    }
+
+    const result = await userDatamapper.editProfileImage(
+      image,
+      imageId,
+      userId
+    );
+    res.status(200).json({
+      message: "Modification d'image réussie",
       result,
     });
   },

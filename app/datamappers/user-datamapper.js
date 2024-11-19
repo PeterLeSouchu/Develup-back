@@ -85,6 +85,21 @@ GROUP BY
     );
     return response.rows[0];
   },
+  async editProfileImage(image, imageId, userId) {
+    const response = await client.query(
+      `
+      UPDATE "user"
+SET 
+    image = $1,
+    image_id = $2
+WHERE 
+    id = $3
+    RETURNING *
+      `,
+      [image, imageId, userId]
+    );
+    return response.rows[0];
+  },
 };
 
 export default userDatamapper;
