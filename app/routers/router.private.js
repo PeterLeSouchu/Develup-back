@@ -5,11 +5,12 @@ import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import userController from '../controllers/user-controller.js';
 import projectController from '../controllers/project-controller.js';
 import technologieController from '../controllers/technologie-controller.js';
-import projectSchemaCreated from '../validation/schemas/form-schema/project-created-schema.js';
-import projectSchemaEditeded from '../validation/schemas/form-schema/project-edited-schema.js';
 import validateSchema from '../validation/validate-middleware.js';
 import { uploadMiddleware } from '../upload/multer-config.js';
 import { cloudinaryMiddleware } from '../upload/cloudinary-middleware.js';
+import userImageEditedSchema from '../validation/schemas/form-schema/user-image-edited.js';
+import projectCreatedSchema from '../validation/schemas/form-schema/project-created-schema.js';
+import projectEditedSchema from '../validation/schemas/form-schema/project-edited-schema.js';
 
 const privateRouter = Router();
 
@@ -30,7 +31,7 @@ privateRouter.post(
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
-  validateSchema(projectSchemaCreated),
+  validateSchema(projectCreatedSchema),
   tryCatchMiddleware(projectController.createProject)
 );
 
@@ -39,7 +40,7 @@ privateRouter.patch(
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
-  validateSchema(projectSchemaEditeded),
+  validateSchema(projectEditedSchema),
   tryCatchMiddleware(projectController.editProject)
 );
 
@@ -48,6 +49,7 @@ privateRouter.patch(
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
+  validateSchema(userImageEditedSchema),
   tryCatchMiddleware(userController.editProfileImage)
 );
 
