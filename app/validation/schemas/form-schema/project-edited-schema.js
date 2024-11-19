@@ -7,11 +7,11 @@ import {
   imageSchema,
 } from '../inputs-schema.js';
 
-const projectSchemaEditeded = Joi.object({
+const projectEditedSchema = Joi.object({
   title: titleSchemaEdited,
   rhythm: rhythmSchemaEdited,
   techno: technoSchema,
   description: descriptionSchemaEdited,
   image: imageSchema,
 });
-export default projectSchemaEditeded;
+export default projectEditedSchema;

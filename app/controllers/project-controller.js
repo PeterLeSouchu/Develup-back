@@ -180,7 +180,6 @@ const projectController = {
     if (isImageDeleted) {
       await projectDatamapper.editImageProject(undefined, undefined, projectId);
       await cloudinary.uploader.destroy(oldProject.image_id);
-      console.log('image supprimé de cloudinary');
     }
 
     if (technos) {

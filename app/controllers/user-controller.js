@@ -245,11 +245,15 @@ const userController = {
       await cloudinary.uploader.destroy(user.image_id);
     }
 
-    const result = await userDatamapper.editProfileImage(
-      image,
-      imageId,
-      userId
-    );
+    if (image && imageId) {
+      await userDatamapper.editProfileImage(image, imageId, userId);
+
+      if (user.image_id) {
+        await cloudinary.uploader.destroy(user.image_id);
+      }
+    }
+
+    const result = await userDatamapper.findById(userId);
     res.status(200).json({
       message: "Modification d'image réussie",
       result,
