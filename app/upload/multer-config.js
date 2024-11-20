@@ -41,9 +41,8 @@ export const uploadMiddleware = (req, res, next) => {
     }
     // If image is in form, it's mean user change image, and if value is '[undefined]', it's mean user has deleted image and send form with no image'
     // In front with React Hook Form, if user send form without image the req.body.image = '[object FileList]', but if user delete image, we reset image input, and req.body.image = 'undefined'
-    console.log(req.body);
+
     if (req.body.image === 'undefined') {
-      console.log("l'user a supprime son image");
       // we create this variable to know if user has deleted image, in order to delete image from db and cloudinary, but we use it only in edit project controller and edit profile controller
       req.deletedImage = true;
     }

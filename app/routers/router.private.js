@@ -8,7 +8,7 @@ import technologieController from '../controllers/technologie-controller.js';
 import validateSchema from '../validation/validate-middleware.js';
 import { uploadMiddleware } from '../upload/multer-config.js';
 import { cloudinaryMiddleware } from '../upload/cloudinary-middleware.js';
-import userImageEditedSchema from '../validation/schemas/form-schema/user-image-edited.js';
+import profileEditedSchema from '../validation/schemas/form-schema/user-edited-schema.js';
 import projectCreatedSchema from '../validation/schemas/form-schema/project-created-schema.js';
 import projectEditedSchema from '../validation/schemas/form-schema/project-edited-schema.js';
 
@@ -45,12 +45,12 @@ privateRouter.patch(
 );
 
 privateRouter.patch(
-  '/api/edit-profile-image',
+  '/api/edit-profile',
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
-  validateSchema(userImageEditedSchema),
-  tryCatchMiddleware(userController.editProfileImage)
+  validateSchema(profileEditedSchema),
+  tryCatchMiddleware(userController.editProfile)
 );
 
 privateRouter.get(
@@ -61,7 +61,7 @@ privateRouter.get(
 
 privateRouter.get(
   '/api/personal-profile',
-  tryCatchMiddleware(projectController.personalProfile)
+  tryCatchMiddleware(userController.personalProfile)
 );
 
 privateRouter.get(
