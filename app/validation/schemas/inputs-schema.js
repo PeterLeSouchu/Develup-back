@@ -77,7 +77,8 @@ export const technoSchema = Joi.string();
 export const imageSchema = Joi.any().optional();
 
 export const pseudoSchemaEdited = Joi.string().optional().max(30).messages({
-  'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
+  'string.empty': 'le pseudo est requis',
+  'string.max': 'Le pseudo ne peut pas posséder plus de 30 caractères',
 });
 
 export const typeSchemaEdited = Joi.string().optional();
