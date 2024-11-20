@@ -10,6 +10,8 @@ import otpGenerator from 'otp-generator';
 import generateUniqueSlug from '../utils/generate-slug.js';
 import cloudinary from '../upload/cloudinary-config.js';
 import technologieDatamapper from '../datamappers/technologie-datamapper.js';
+import projectController from './project-controller.js';
+import projectDatamapper from '../datamappers/project-datamapper.js';
 
 const userController = {
   async sendOTP(req, res) {
@@ -313,6 +315,20 @@ const userController = {
     const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
     if (!isGoodPassword) {
       throw new ApiError('Mot de passe incorrect', 401);
+    }
+
+    const userProjects = await projectDatamapper.findAllProjectByUserId(userId);
+
+    if (userProjects) {
+      for (const project of userProjects) {
+        if (project.image_id) {
+          await cloudinary.uploader.destroy(project.image_id);
+        }
+      }
+    }
+
+    if (user.image_id) {
+      await cloudinary.uploader.destroy(user.image_id);
     }
 
     await userDatamapper.deleteAccount(userId);

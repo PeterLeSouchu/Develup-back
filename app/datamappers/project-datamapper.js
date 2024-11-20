@@ -355,6 +355,15 @@ GROUP BY
       [image, imageId, projectId]
     );
   },
+  async findAllProjectByUserId(userId) {
+    const response = await client.query(
+      `
+      SELECT * FROM project WHERE user_id = $1
+      `,
+      [userId]
+    );
+    return response.rows;
+  },
 };
 
 export default projectDatamapper;
