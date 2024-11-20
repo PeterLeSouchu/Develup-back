@@ -171,7 +171,9 @@ const projectController = {
 
     if (isImageDeleted) {
       await projectDatamapper.editImageProject(undefined, undefined, projectId);
-      await cloudinary.uploader.destroy(oldProject.image_id);
+      if (oldProject.image_id) {
+        await cloudinary.uploader.destroy(oldProject.image_id);
+      }
     }
 
     if (technos) {

@@ -99,15 +99,11 @@ const userController = {
       throw new ApiError('Code OTP invalide', 400);
     }
 
-    // By default we put this image avatar
-    const image = ' https://www.w3schools.com/w3images/avatar2.png';
-
     const createdUser = await userDatamapper.save(
       email,
       passwordHashed,
       pseudo,
-      slug,
-      image
+      slug
     );
 
     const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
@@ -257,7 +253,9 @@ const userController = {
 
     if (isImageDeleted) {
       await userDatamapper.editProfileImage(undefined, undefined, userId);
-      await cloudinary.uploader.destroy(user.image_id);
+      if (user.image_id) {
+        await cloudinary.uploader.destroy(user.image_id);
+      }
     }
 
     if (image && imageId) {
@@ -292,7 +290,6 @@ const userController = {
     }
 
     const result = await userDatamapper.getDetailsUserById(userId);
-    console.log(result);
     res.status(200).json({
       message: "Modification d'image réussie",
       result,
