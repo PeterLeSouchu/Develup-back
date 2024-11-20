@@ -75,3 +75,9 @@ export const technoSchema = Joi.string();
 
 // here when user send no image, it's a special data so we just make Joi.any, and when user send image multer already filtered type and size + there's is a zod verification for image in front
 export const imageSchema = Joi.any().optional();
+
+export const pseudoSchemaEdited = Joi.string().optional().max(30).messages({
+  'string.max': 'Le titre ne peut pas posséder plus de 30 caractères',
+});
+
+export const typeSchemaEdited = Joi.string().optional();

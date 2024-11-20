@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import otpGenerator from 'otp-generator';
 import generateUniqueSlug from '../utils/generate-slug.js';
 import cloudinary from '../upload/cloudinary-config.js';
+import technologieDatamapper from '../datamappers/technologie-datamapper.js';
 
 const userController = {
   async sendOTP(req, res) {
@@ -231,14 +232,29 @@ const userController = {
       result,
     });
   },
-  async editProfileImage(req, res) {
+  async editProfile(req, res) {
     const userId = req.user.id;
+    const { pseudo, type, description } = req.body;
     const image = req.urlImage;
     const imageId = req.imageId;
     const isImageDeleted = req.deletedImage;
-    console.log("est-ce que l'image a ete supprimé ?");
-    console.log(isImageDeleted);
+    const technos = req.body.techno ? JSON.parse(req.body.techno) : undefined;
+
     const user = await userDatamapper.findById(userId);
+
+    if (pseudo) {
+      const newProfileSlug = await generateUniqueSlug(pseudo, userDatamapper);
+
+      await userDatamapper.editPseudoProfile(pseudo, newProfileSlug, userId);
+    }
+
+    if (type) {
+      await userDatamapper.editTypeProfile(type, userId);
+    }
+
+    if (description) {
+      await userDatamapper.editDescriptionProfile(description, userId);
+    }
 
     if (isImageDeleted) {
       await userDatamapper.editProfileImage(undefined, undefined, userId);
@@ -253,9 +269,41 @@ const userController = {
       }
     }
 
-    const result = await userDatamapper.findById(userId);
+    if (technos) {
+      const oldTechno = await technologieDatamapper.getAllTechnoFromProfile(
+        userId
+      );
+
+      const newTechnoId = technos.map((tech) => tech.id);
+      const oldTechnoId = oldTechno.map((tech) => tech.id);
+
+      const technoToAdd = technos.filter(
+        (newTech) => !oldTechnoId.includes(newTech.id)
+      );
+      const technoToRemove = oldTechno.filter(
+        (tech) => !newTechnoId.includes(tech.id)
+      );
+
+      for (const techno of technoToAdd) {
+        await technologieDatamapper.relateTechnoToProfile(userId, techno.id);
+      }
+      for (const techno of technoToRemove) {
+        await technologieDatamapper.deleteTechnoToProfile(userId, techno.id);
+      }
+    }
+
+    const result = await userDatamapper.getDetailsUserById(userId);
+    console.log(result);
     res.status(200).json({
       message: "Modification d'image réussie",
+      result,
+    });
+  },
+  async personalProfile(req, res) {
+    const userId = req.user.id;
+    const result = await userDatamapper.getPersonalProfile(userId);
+    res.status(200).json({
+      message: 'Récupération des infos personnelles réussies',
       result,
     });
   },
