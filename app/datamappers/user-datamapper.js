@@ -218,6 +218,14 @@ GROUP BY
     );
     return response.rows[0];
   },
+  async deleteAccount(userId) {
+    const response = await client.query(
+      `
+      DELETE FROM "user" WHERE id = $1
+      `,
+      [userId]
+    );
+  },
 };
 
 export default userDatamapper;
