@@ -136,7 +136,6 @@ const userController = {
 
     const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
     if (!isGoodPassword) {
-      s;
       throw new ApiError('Identifiants incorrects', 401);
     }
 
@@ -306,6 +305,43 @@ const userController = {
       message: 'Récupération des infos personnelles réussies',
       result,
     });
+  },
+  async deleteAccount(req, res) {
+    const userId = req.user.id;
+    const { password } = req.body;
+    const user = await userDatamapper.findById(userId);
+
+    const passwordHashFromDB = user.password;
+
+    const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
+    if (!isGoodPassword) {
+      throw new ApiError('Mot de passe incorrect', 401);
+    }
+
+    await userDatamapper.deleteAccount(userId);
+
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+    });
+
+    // In local
+    res.clearCookie('psifi.x-csrf-token', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+    });
+
+    // In prod
+    // res.clearCookie('__Host-psifi.x-csrf-token', {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'Lax',
+    // });
+    res
+      .status(200)
+      .json({ message: 'Suppression de compte traitée avec succès' });
   },
 };
 
