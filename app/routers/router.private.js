@@ -53,6 +53,12 @@ privateRouter.patch(
   tryCatchMiddleware(userController.editProfile)
 );
 
+privateRouter.post(
+  '/api/delete-account',
+  csrfMiddleware,
+  tryCatchMiddleware(userController.deleteAccount)
+);
+
 privateRouter.get(
   '/api/personal-projects',
   csrfMiddleware,
