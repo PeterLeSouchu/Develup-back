@@ -245,9 +245,7 @@ const userController = {
       await userDatamapper.editPseudoProfile(pseudo, newProfileSlug, userId);
     }
 
-    if (type) {
-      await userDatamapper.editTypeProfile(type, userId);
-    }
+    await userDatamapper.editTypeProfile(type, userId);
 
     if (description) {
       await userDatamapper.editDescriptionProfile(description, userId);

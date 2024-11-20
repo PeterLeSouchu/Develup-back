@@ -81,4 +81,4 @@ export const pseudoSchemaEdited = Joi.string().optional().max(30).messages({
   'string.max': 'Le pseudo ne peut pas posséder plus de 30 caractères',
 });
 
-export const typeSchemaEdited = Joi.string().optional();
+export const typeSchemaEdited = Joi.string().allow('').optional();
