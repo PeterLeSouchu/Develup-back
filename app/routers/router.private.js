@@ -11,6 +11,7 @@ import { cloudinaryMiddleware } from '../upload/cloudinary-middleware.js';
 import profileEditedSchema from '../validation/schemas/form-schema/user-edited-schema.js';
 import projectCreatedSchema from '../validation/schemas/form-schema/project-created-schema.js';
 import projectEditedSchema from '../validation/schemas/form-schema/project-edited-schema.js';
+import editPasswordSchema from '../validation/schemas/form-schema/edit-password-schema.js';
 
 const privateRouter = Router();
 
@@ -89,6 +90,13 @@ privateRouter.delete(
 privateRouter.get(
   '/api/user/:slug',
   tryCatchMiddleware(userController.detailsUser)
+);
+
+privateRouter.post(
+  '/api/edit-password',
+  csrfMiddleware,
+  validateSchema(editPasswordSchema),
+  tryCatchMiddleware(userController.editPassword)
 );
 
 export default privateRouter;

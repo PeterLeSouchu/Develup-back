@@ -226,6 +226,17 @@ GROUP BY
       [userId]
     );
   },
+
+  async editPassword(newPassword, userId) {
+    const response = await client.query(
+      `
+      UPDATE "user"
+      SET password = $1
+      WHERE id = $2
+      `,
+      [newPassword, userId]
+    );
+  },
 };
 
 export default userDatamapper;

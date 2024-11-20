@@ -25,6 +25,7 @@ export const passwordSchema = Joi.string()
   .pattern(/[@$!%*?&.]/)
   .messages({
     'string.empty': 'Le mot de passe est requis.',
+    'string.min': 'Le mot de passe requiert au moins 8 caractères',
     'string.pattern.base':
       'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
   });

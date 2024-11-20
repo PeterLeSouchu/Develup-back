@@ -354,6 +354,32 @@ const userController = {
       .status(200)
       .json({ message: 'Suppression de compte traitée avec succès' });
   },
+
+  async editPassword(req, res) {
+    console.log('on est dedans ');
+    const userId = req.user.id;
+    const { password, newPassword, newPasswordConfirm } = req.body;
+
+    if (newPassword !== newPasswordConfirm) {
+      throw new ApiError('Les mots de passe ne correspondent pas', 401);
+    }
+    console.log('les mot de passe sont identiques');
+
+    const user = await userDatamapper.findById(userId);
+
+    const passwordHashFromDB = user.password;
+
+    const isGoodPassword = await verifyPassword(password, passwordHashFromDB);
+    if (!isGoodPassword) {
+      throw new ApiError('Mot de passe incorrect', 401);
+    }
+
+    const newPasswordHashed = await hashPassword(newPassword);
+
+    await userDatamapper.editPassword(newPasswordHashed, userId);
+
+    res.status(200).json({ message: 'Mot de passe modifié avec succès' });
+  },
 };
 
 export default userController;
