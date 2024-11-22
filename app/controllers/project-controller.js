@@ -46,7 +46,16 @@ const projectController = {
   },
   async detailsProjectBySlug(req, res) {
     const projectSlug = req.params.slug;
-    const result = await projectDatamapper.getDetailsProjectBySlug(projectSlug);
+    const resultDatamapper = await projectDatamapper.getDetailsProjectBySlug(
+      projectSlug
+    );
+    const userId = req.user.id;
+    const userIdProject = resultDatamapper.user_id;
+
+    const ownProject = userId === userIdProject;
+
+    const result = { ...resultDatamapper, ownProject };
+
     res
       .status(200)
       .json({ message: 'Récupération des données du projet réussie', result });
