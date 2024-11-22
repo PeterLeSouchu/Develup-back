@@ -1,6 +1,6 @@
 import { io } from './app';
 import ApiError from './errors/error';
-import conversationDatamapper from './datamappers/conversation-datamepper';
+import conversationDatamapper from './datamappers/conversation-datamapper';
 import jwt from 'jsonwebtoken';
 
 // Middleware to verify jwt
