@@ -22,6 +22,14 @@ const conversationDatamapper = {
     );
     return response.data[0];
   },
+  async sendFirstMessage(projectId, userId, userIdCreated) {
+    await client.query(
+      `
+      INSERT INTO "conversation" (project_id, user_id1, user_id2)
+        VALUES ($1, $2, $3)`,
+      [projectId, userId, userIdCreated]
+    );
+  },
 };
 
 export default conversationDatamapper;

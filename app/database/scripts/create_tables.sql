@@ -70,8 +70,7 @@ CREATE TABLE "project_techno" (
 
 CREATE TABLE "conversation" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "title" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
+    "project_id" UUID NOT NULL REFERENCES "project" ("id") ON DELETE CASCADE,
     "user_id1" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "user_id2" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
