@@ -5,6 +5,7 @@ import tryCatchMiddleware from '../errors/try-catch-middleware.js';
 import userController from '../controllers/user-controller.js';
 import projectController from '../controllers/project-controller.js';
 import technologieController from '../controllers/technologie-controller.js';
+import conversationController from '../controllers/conversation-controller.js';
 import validateSchema from '../validation/validate-middleware.js';
 import { uploadMiddleware } from '../upload/multer-config.js';
 import { cloudinaryMiddleware } from '../upload/cloudinary-middleware.js';
@@ -97,6 +98,12 @@ privateRouter.post(
   csrfMiddleware,
   validateSchema(editPasswordSchema),
   tryCatchMiddleware(userController.editPassword)
+);
+
+privateRouter.post(
+  '/api/open-conversation',
+  csrfMiddleware,
+  tryCatchMiddleware(conversationController.openConversation)
 );
 
 export default privateRouter;
