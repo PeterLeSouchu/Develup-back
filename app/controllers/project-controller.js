@@ -55,17 +55,22 @@ const projectController = {
     const userIdProject = resultDatamapper.user_id;
     const projectId = resultDatamapper.id;
 
+    // Here we send infos to front in order to know if it's the user who create the project, and in fornt if this condition is true we write 'realised by you' instead our pseudo
+    const ownProject = userId === userIdProject;
+
     // in the detail project page, we send an info to checkgit add . if conversation is already open, and here we return the id conversation in order to redirect in fornt when user click on contact user
     const isAlreadyConversation =
       await conversationDatamapper.checkConversationExist(projectId, userId);
 
-    // Here we send infos to front in order to know if it's the user who create the project, and in fornt if this condition is true we write 'realised by you' instead our pseudo
-    const ownProject = userId === userIdProject;
+    let conversationId;
+    if (isAlreadyConversation) {
+      conversationId = isAlreadyConversation.id;
+    }
 
     const result = {
       ...resultDatamapper,
       ownProject,
-      isAlreadyConversation: isAlreadyConversation.id,
+      isAlreadyConversation: conversationId,
     };
 
     res

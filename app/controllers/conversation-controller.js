@@ -29,7 +29,10 @@ const conversationController = {
       conversationCreated.id
     );
 
-    res.status(200).json({ message: 'Message envoyé avec succès' });
+    res.status(200).json({
+      message: 'Message envoyé avec succès',
+      result: conversationCreated.id,
+    });
   },
 
   async getAllConversations(req, res) {
@@ -51,6 +54,40 @@ const conversationController = {
     res
       .status(200)
       .json({ message: 'Conversations récupérées avec succès', result });
+  },
+
+  async getOneConversation(req, res) {
+    const userId = req.user.id;
+    const conversationId = req.params.id;
+
+    const isUserAllowed =
+      await conversationDatamapper.checkIfUserIsInConversation(
+        userId,
+        conversationId
+      );
+
+    if (!isUserAllowed) {
+      throw new ApiError(
+        'Une erreur innatendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
+        403
+      );
+    }
+
+    const conversation =
+      await conversationDatamapper.getMessagesFromConversation(conversationId);
+
+    // Here i add a propriety name 'isMe' (boolean) in a object message in order to know if it's the user that send the message
+    const messagesFormated = conversation.messages.map((message) => {
+      return message.author_id === userId
+        ? { ...message, isMe: true }
+        : { ...message, isMe: false };
+    });
+
+    const result = { ...conversation, messages: messagesFormated };
+
+    res
+      .status(200)
+      .json({ message: 'Conversation récupérée avec succès', result });
   },
 };
 

@@ -112,4 +112,10 @@ privateRouter.get(
   tryCatchMiddleware(conversationController.getAllConversations)
 );
 
+privateRouter.get(
+  '/api/conversation/:id',
+  csrfMiddleware,
+  tryCatchMiddleware(conversationController.getOneConversation)
+);
+
 export default privateRouter;
