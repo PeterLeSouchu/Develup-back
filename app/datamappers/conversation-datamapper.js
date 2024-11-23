@@ -6,7 +6,7 @@ const conversationDatamapper = {
       `
               SELECT * 
               FROM conversation 
-              WHERE user_id1 = $1 OR WHERE user_id2 =$1 AND id = $2
+              WHERE (user_id1 = $1 OR user_id2 =$1) AND id = $2
             ;`,
       [userId, conversationId]
     );
@@ -58,8 +58,7 @@ SELECT
     m.user_id AS author_message_id, 
     u.pseudo AS author_message_pseudo, 
     p.title AS title, 
-    p.image AS image,
-    up.pseudo AS user_project_pseudo
+    p.image AS image
 FROM "conversation" c
 LEFT JOIN (
     SELECT conversation_id, MAX(created_at) AS latest_message_date
@@ -69,7 +68,6 @@ LEFT JOIN (
 LEFT JOIN message m ON m.conversation_id = c.id AND m.created_at = latest.latest_message_date
 LEFT JOIN "user" u ON u.id = m.user_id
 LEFT JOIN project p ON p.id = c.project_id
-LEFT JOIN "user" up ON up.id = p.user_id
 WHERE user_id1 = $1 OR user_id2 = $1
 ORDER BY m.created_at DESC;
 
@@ -78,6 +76,46 @@ ORDER BY m.created_at DESC;
       [userId]
     );
     return response.rows;
+  },
+
+  async getMessagesFromConversation(conversationId) {
+    const response = await client.query(
+      `
+
+  
+SELECT  
+    p.title AS title,
+    p.slug AS project_slug,
+    p.image AS image,
+    u.pseudo AS pseudo,
+    u.slug AS user_slug,
+    COALESCE(
+        jsonb_agg(
+            DISTINCT jsonb_build_object(
+                'id', m.id,
+                'author_id', m.user_id,
+                'content', m.content,
+                 'date', to_char(m.created_at, 'Le DD/MM/YYYY à HH24"h"MI')
+            )
+        ) FILTER (WHERE m.id IS NOT NULL), 
+        '[]'::jsonb
+    ) AS messages
+FROM 
+    conversation c
+JOIN 
+    "user" AS user1 ON c.user_id1 = user1.id
+JOIN 
+    "user" AS user2 ON c.user_id2 = user2.id
+JOIN "project" AS p ON c.project_id = p.id   
+JOIN "user" AS u ON u.id = p.user_id 
+JOIN "message" AS m ON m.conversation_id = c.id
+WHERE 
+    c.id = $1  
+GROUP BY 
+     p.id, u.pseudo, u.slug;   `,
+      [conversationId]
+    );
+    return response.rows[0];
   },
 };
 
