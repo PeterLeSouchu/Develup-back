@@ -20,7 +20,7 @@ const conversationDatamapper = {
         RETURNING *`,
       [message, userId, conversationId]
     );
-    return response.data[0];
+    return response.rows[0];
   },
   async sendFirstMessage(projectId, userId, userIdCreated) {
     const response = await client.query(
@@ -81,9 +81,8 @@ ORDER BY m.created_at DESC;
   async getMessagesFromConversation(conversationId) {
     const response = await client.query(
       `
-
-  
-SELECT  
+      SELECT  
+    c.id,
     p.title AS title,
     p.slug AS project_slug,
     p.image AS image,
@@ -91,11 +90,11 @@ SELECT
     u.slug AS user_slug,
     COALESCE(
         jsonb_agg(
-            DISTINCT jsonb_build_object(
+            jsonb_build_object(
                 'id', m.id,
                 'author_id', m.user_id,
                 'content', m.content,
-                 'date', to_char(m.created_at, 'Le DD/MM/YYYY à HH24"h"MI')
+                'date', to_char(m.created_at, 'Le DD/MM/YYYY à HH24"h"MI')
             )
         ) FILTER (WHERE m.id IS NOT NULL), 
         '[]'::jsonb
@@ -108,11 +107,22 @@ JOIN
     "user" AS user2 ON c.user_id2 = user2.id
 JOIN "project" AS p ON c.project_id = p.id   
 JOIN "user" AS u ON u.id = p.user_id 
-JOIN "message" AS m ON m.conversation_id = c.id
+JOIN LATERAL (
+    SELECT 
+        m.id,
+        m.user_id,
+        m.content,
+        m.created_at
+    FROM "message" AS m
+    WHERE m.conversation_id = c.id
+    ORDER BY m.created_at 
+) AS m ON true 
 WHERE 
-    c.id = $1  
+    c.id = $1
 GROUP BY 
-     p.id, u.pseudo, u.slug;   `,
+    c.id, p.id, u.pseudo, u.slug;
+ 
+ `,
       [conversationId]
     );
     return response.rows[0];
