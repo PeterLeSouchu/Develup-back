@@ -100,11 +100,14 @@ const userController = {
       throw new ApiError('Code OTP invalide', 400);
     }
 
+    const type = 'Développeur';
+
     const createdUser = await userDatamapper.save(
       email,
       passwordHashed,
       pseudo,
-      slug
+      slug,
+      type
     );
 
     const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
@@ -156,6 +159,11 @@ const userController = {
       sameSite: 'Lax',
     });
 
+    res.clearCookie('io', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax',
+    });
     // In local
     res.clearCookie('psifi.x-csrf-token', {
       httpOnly: true,
@@ -243,11 +251,10 @@ const userController = {
 
       await userDatamapper.editPseudoProfile(pseudo, newProfileSlug, userId);
     }
+    console.log(type);
 
     if (type) {
       await userDatamapper.editTypeProfile(type, userId);
-    } else {
-      await userDatamapper.editTypeProfile(null, userId);
     }
 
     if (description) {

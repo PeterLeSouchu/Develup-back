@@ -40,6 +40,7 @@ const io = new Server(server, {
 });
 
 io.use((socket, next) => {
+  console.log('middleware socket jwt');
   try {
     const token = socket.handshake.headers.cookie
       ? socket.handshake.headers.cookie
@@ -124,8 +125,6 @@ io.on('connection', (socket) => {
         user_id: socket.user.id,
       };
 
-      console.log('message a envoyer');
-      console.log(messageToSendToClient);
       io.to(conversationId).emit('newMessage', messageToSendToClient);
     } catch (error) {
       console.error("Erreur lors de l'envoi d'un message :", error);
