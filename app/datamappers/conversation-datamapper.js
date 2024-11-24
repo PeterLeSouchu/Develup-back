@@ -78,52 +78,63 @@ ORDER BY m.created_at DESC;
     return response.rows;
   },
 
-  async getMessagesFromConversation(conversationId) {
+  async getMessagesFromConversation(userId, conversationId) {
     const response = await client.query(
       `
+
+
       SELECT  
-    c.id,
-    p.title AS title,
-    p.slug AS project_slug,
-    p.image AS image,
-    u.pseudo AS pseudo,
-    u.slug AS user_slug,
-    COALESCE(
-        jsonb_agg(
-            jsonb_build_object(
-                'id', m.id,
-                'author_id', m.user_id,
-                'content', m.content,
-                'date', to_char(m.created_at, 'Le DD/MM/YYYY à HH24"h"MI')
-            )
-        ) FILTER (WHERE m.id IS NOT NULL), 
-        '[]'::jsonb
-    ) AS messages
-FROM 
-    conversation c
-JOIN 
-    "user" AS user1 ON c.user_id1 = user1.id
-JOIN 
-    "user" AS user2 ON c.user_id2 = user2.id
-JOIN "project" AS p ON c.project_id = p.id   
-JOIN "user" AS u ON u.id = p.user_id 
-JOIN LATERAL (
-    SELECT 
-        m.id,
-        m.user_id,
-        m.content,
-        m.created_at
-    FROM "message" AS m
-    WHERE m.conversation_id = c.id
-    ORDER BY m.created_at 
-) AS m ON true 
-WHERE 
-    c.id = $1
-GROUP BY 
-    c.id, p.id, u.pseudo, u.slug;
+      c.id,
+      p.title AS title,
+      p.slug AS project_slug,
+      p.image AS image,
+  
+      CASE 
+          WHEN c.user_id1 = $1 THEN user2.pseudo  
+          WHEN c.user_id2 = $1 THEN user1.pseudo
+      END AS pseudo,
+  
+      CASE 
+          WHEN c.user_id1 = $1 THEN user2.slug
+          WHEN c.user_id2 = $1 THEN user1.slug
+      END AS user_slug,
+      COALESCE(
+          jsonb_agg(
+              jsonb_build_object(
+                  'id', m.id,
+                  'author_id', m.user_id,
+                  'content', m.content,
+                  'date', to_char(m.created_at, 'Le DD/MM/YYYY à HH24"h"MI')
+              )
+          ) FILTER (WHERE m.id IS NOT NULL), 
+          '[]'::jsonb
+      ) AS messages
+  FROM 
+      conversation c
+  JOIN 
+      "user" AS user1 ON c.user_id1 = user1.id
+  JOIN 
+      "user" AS user2 ON c.user_id2 = user2.id
+  JOIN "project" AS p ON c.project_id = p.id   
+  JOIN "user" AS u ON u.id = p.user_id 
+  JOIN LATERAL (
+      SELECT 
+          m.id,
+          m.user_id,
+          m.content,
+          m.created_at
+      FROM "message" AS m
+      WHERE m.conversation_id = c.id
+      ORDER BY m.created_at 
+  ) AS m ON true 
+  WHERE 
+      c.id = $2
+  GROUP BY 
+      c.id, p.id, user1.pseudo, user2.pseudo, user1.slug, user2.slug, u.slug;
+  
  
  `,
-      [conversationId]
+      [userId, conversationId]
     );
     return response.rows[0];
   },

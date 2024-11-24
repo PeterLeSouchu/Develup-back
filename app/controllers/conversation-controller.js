@@ -74,7 +74,10 @@ const conversationController = {
     }
 
     const conversation =
-      await conversationDatamapper.getMessagesFromConversation(conversationId);
+      await conversationDatamapper.getMessagesFromConversation(
+        userId,
+        conversationId
+      );
 
     // Here i add a propriety name 'isMe' (boolean) in a object message in order to know if it's the user that send the message
     const messagesFormated = conversation.messages.map((message) => {
