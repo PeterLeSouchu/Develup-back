@@ -118,4 +118,9 @@ privateRouter.get(
   tryCatchMiddleware(conversationController.getOneConversation)
 );
 
+privateRouter.get(
+  '/api/get-user-id',
+  tryCatchMiddleware(userController.getUserId)
+);
+
 export default privateRouter;

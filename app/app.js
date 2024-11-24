@@ -121,11 +121,11 @@ io.on('connection', (socket) => {
         id: savedMessage.id,
         date: formattedDate,
         content: savedMessage.content,
-        isMe: savedMessage.user_id === socket.user.id ? true : false,
+        user_id: socket.user.id,
       };
 
-      console.log('Message envoyé :', messageToSendToClient);
-
+      console.log('message a envoyer');
+      console.log(messageToSendToClient);
       io.to(conversationId).emit('newMessage', messageToSendToClient);
     } catch (error) {
       console.error("Erreur lors de l'envoi d'un message :", error);

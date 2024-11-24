@@ -10,7 +10,6 @@ import otpGenerator from 'otp-generator';
 import generateUniqueSlug from '../utils/generate-slug.js';
 import cloudinary from '../upload/cloudinary-config.js';
 import technologieDatamapper from '../datamappers/technologie-datamapper.js';
-import projectController from './project-controller.js';
 import projectDatamapper from '../datamappers/project-datamapper.js';
 
 const userController = {
@@ -383,6 +382,10 @@ const userController = {
     await userDatamapper.editPassword(newPasswordHashed, userId);
 
     res.status(200).json({ message: 'Mot de passe modifié avec succès' });
+  },
+  async getUserId(req, res) {
+    const userId = req.user.id;
+    res.status(200).json({ message: 'id récupéré avec succès', userId });
   },
 };
 
