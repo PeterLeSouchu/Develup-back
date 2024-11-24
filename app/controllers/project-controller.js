@@ -62,7 +62,7 @@ const projectController = {
     const isAlreadyConversation =
       await conversationDatamapper.checkConversationExist(projectId, userId);
 
-    let conversationId;
+    let conversationId = null;
     if (isAlreadyConversation) {
       conversationId = isAlreadyConversation.id;
     }

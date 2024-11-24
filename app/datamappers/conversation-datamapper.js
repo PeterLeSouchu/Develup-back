@@ -43,7 +43,7 @@ const conversationDatamapper = {
   async checkConversationExist(projectId, userId) {
     const response = await client.query(
       `
-      SELECT * FROM "conversation" WHERE project_id = $1 AND user_id1 = $2 OR user_id2 = $2`,
+      SELECT * FROM "conversation" WHERE project_id = $1 AND (user_id1 = $2 OR user_id2 = $2)`,
       [projectId, userId]
     );
     return response.rows[0];
