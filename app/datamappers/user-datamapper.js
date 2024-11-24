@@ -31,14 +31,14 @@ const userDatamapper = {
     );
     return response.rows[0];
   },
-  async save(email, password, pseudo, slug, image) {
+  async save(email, password, pseudo, slug, type) {
     const response = await client.query(
       `
-      INSERT INTO "user"("email", "password", "pseudo", "slug", "image")
+      INSERT INTO "user"("email", "password", "pseudo", "slug", "type")
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *
       ;`,
-      [email, password, pseudo, slug, image]
+      [email, password, pseudo, slug, type]
     );
     return response.rows[0];
   },
