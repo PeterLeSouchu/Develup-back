@@ -56,14 +56,14 @@ io.use((socket, next) => {
       : null;
 
     if (!token) {
-      return socket.emit('error', 'Erreur innatendue, réessayez plus tard');
+      return socket.emit('error', 'Erreur inattendue, réessayez plus tard');
     }
 
     const user = jwt.verify(token, process.env.JWT_SECRET);
     socket.user = user;
     next();
   } catch (err) {
-    return socket.emit('error', 'Erreur innatendue, réessayez plus tard');
+    return socket.emit('error', 'Erreur inattendue, réessayez plus tard');
   }
 });
 
