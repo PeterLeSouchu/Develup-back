@@ -43,14 +43,6 @@ const technos = [
   },
 ];
 
-const newTechnos = [
-  {
-    name: 'PHP',
-    image:
-      'https://i.postimg.cc/0yng58z6/1012812-code-development-logo-php-icon.png',
-  },
-];
-
 async function seedingTechno() {
   try {
     for (const techno of technos) {
