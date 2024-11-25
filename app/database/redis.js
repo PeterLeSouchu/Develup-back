@@ -7,5 +7,5 @@ export const redis = new Redis({
   port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD,
   username: process.env.REDIS_USER,
-  tls: {}, // Activate SSL
+  //   tls: {}, // Activate SSL
 });
