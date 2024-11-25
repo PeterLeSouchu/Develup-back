@@ -17,19 +17,22 @@ import editPasswordSchema from '../validation/schemas/form-schema/edit-password-
 const privateRouter = Router();
 
 privateRouter.post('/api/logout', tryCatchMiddleware(userController.logout));
-privateRouter.use(jwtMiddleware);
+// privateRouter.use(jwtMiddleware);
 
 privateRouter.post(
   '/api/search',
+  jwtMiddleware,
   tryCatchMiddleware(projectController.searchProject)
 );
 privateRouter.get(
   '/api/projects',
+  jwtMiddleware,
   tryCatchMiddleware(projectController.defaultProjects)
 );
 
 privateRouter.post(
   '/api/project',
+  jwtMiddleware,
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
@@ -39,6 +42,7 @@ privateRouter.post(
 
 privateRouter.patch(
   '/api/project/:slug',
+  jwtMiddleware,
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
@@ -48,6 +52,7 @@ privateRouter.patch(
 
 privateRouter.patch(
   '/api/edit-profile',
+  jwtMiddleware,
   csrfMiddleware,
   uploadMiddleware,
   cloudinaryMiddleware,
@@ -57,44 +62,52 @@ privateRouter.patch(
 
 privateRouter.post(
   '/api/delete-account',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(userController.deleteAccount)
 );
 
 privateRouter.get(
   '/api/personal-projects',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(projectController.personalProjects)
 );
 
 privateRouter.get(
   '/api/personal-profile',
+  jwtMiddleware,
   tryCatchMiddleware(userController.personalProfile)
 );
 
 privateRouter.get(
   '/api/technologies',
+  jwtMiddleware,
   tryCatchMiddleware(technologieController.defaultTechnologies)
 );
 
 privateRouter.get(
   '/api/project/:slug',
+  jwtMiddleware,
   tryCatchMiddleware(projectController.detailsProjectBySlug)
 );
 
 privateRouter.delete(
   '/api/project/:id',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(projectController.deleteProject)
 );
 
 privateRouter.get(
   '/api/user/:slug',
+  jwtMiddleware,
   tryCatchMiddleware(userController.detailsUser)
 );
 
 privateRouter.post(
   '/api/edit-password',
+  jwtMiddleware,
   csrfMiddleware,
   validateSchema(editPasswordSchema),
   tryCatchMiddleware(userController.editPassword)
@@ -102,24 +115,28 @@ privateRouter.post(
 
 privateRouter.post(
   '/api/open-conversation',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(conversationController.openConversation)
 );
 
 privateRouter.get(
   '/api/conversations',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(conversationController.getAllConversations)
 );
 
 privateRouter.get(
   '/api/conversation/:id',
+  jwtMiddleware,
   csrfMiddleware,
   tryCatchMiddleware(conversationController.getOneConversation)
 );
 
 privateRouter.get(
   '/api/get-user-id',
+  jwtMiddleware,
   tryCatchMiddleware(userController.getUserId)
 );
 
