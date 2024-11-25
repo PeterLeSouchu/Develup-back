@@ -36,6 +36,11 @@ const technos = [
     image: 'https://i.postimg.cc/T1st76ps/4691205-redux-icon.png',
   },
   { name: 'PostgreSQL', image: 'https://i.postimg.cc/xdVvgPPn/postgre.png' },
+  {
+    name: 'PHP',
+    image:
+      'https://i.postimg.cc/0yng58z6/1012812-code-development-logo-php-icon.png',
+  },
 ];
 
 const newTechnos = [
@@ -48,7 +53,7 @@ const newTechnos = [
 
 async function seedingTechno() {
   try {
-    for (const techno of newTechnos) {
+    for (const techno of technos) {
       await client.query('INSERT INTO techno (name, image) VALUES ($1, $2)', [
         techno.name,
         techno.image,

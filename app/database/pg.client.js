@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import pg from 'pg';
 const { Pool } = pg;
 
@@ -16,7 +15,6 @@ const pool = new Pool({
 let client = null;
 try {
   client = await pool.connect();
-  console.log('Connected to the database');
 } catch (err) {
   console.error('Connection error', err.stack);
   throw err;
