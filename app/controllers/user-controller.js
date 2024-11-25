@@ -164,19 +164,19 @@ const userController = {
       secure: false,
       sameSite: 'Lax',
     });
-    // In local
-    res.clearCookie('psifi.x-csrf-token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    });
-
-    // In prod
-    // res.clearCookie('__Host-psifi.x-csrf-token', {
+    // // In local
+    // res.clearCookie('psifi.x-csrf-token', {
     //   httpOnly: true,
-    //   secure: true,
+    //   secure: false,
     //   sameSite: 'Lax',
     // });
+
+    // In prod
+    res.clearCookie('__Host-psifi.x-csrf-token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+    });
     res.status(200).json({ message: 'Déconnexion réussie' });
   },
   async sendResetLink(req, res) {
