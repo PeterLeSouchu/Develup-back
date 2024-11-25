@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     // origin: ['http://localhost:5173'],
-    origin: ['https://develup-back-production.up.railway.app'],
+    origin: ['https://develup.up.railway.app'],
     credentials: true,
     withCredentials: true,
   })
