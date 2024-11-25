@@ -11,19 +11,14 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendMail(email, pseudo, OTP) {
+export async function sendMail(email, subject, message) {
   await transporter.sendMail({
     from: {
       name: 'Develup Team',
       address: 'develup33@gmail.com',
     },
-    to: `${email}`,
-    subject: 'OTP Code',
-    html: `<h1> Develup </h1>
-            <p>Bonjour ${pseudo},</p>
-            <p>Nous vous souhaitons la bienvenue sur Develup! </p>
-            <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span> ${OTP}</span></p>
-            <p>Merci à vous et bonne visite!</p>
-          `,
+    to: email,
+    subject: subject,
+    html: message,
   });
 }

@@ -1,9 +1,13 @@
 import { Router } from 'express';
-// import privateRouter from './router.private';
+import privateRouter from './router.private.js';
 import publicRouter from './router.public.js';
+import csrfTokenMethod from '../security/csrf/csrf-method.js';
 const router = Router();
 
-// router.use(privateRouter);
+// call when user is connected with useEffect in react
+router.get('/api/csrf-token', csrfTokenMethod);
+
 router.use(publicRouter);
+router.use(privateRouter);
 
 export default router;
