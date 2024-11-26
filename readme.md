@@ -44,13 +44,13 @@
 - Chaque conversation relie deux utilisateurs (l'auteur et celui interéssé) à un projet.
 - Pour sécurisé cela, des qu'on arrive sur la page conversation on vient rendre au client toute les conversations qu'il possède grâçe à l'id de son jwt, et dès qu'il clique sur une conversation pour afficher les messages, on regarde si l'utilisateur en plus d'être connecté, est dans cette conversation, sinon on génère une erreur généraliste, cela garantie que seul ceux qui sont dans cette conversation ont accès aux messages de cette dernière.
 
-### 🗄️ 6. Base de données
+### 🗄️ 6. Bases de données
 
 - Utilisation d'une base de données relationnelle Postgres sous cette forme
 - Script de seeding pour stocker le nom et l'image associé à une technologie / langage
 - Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
 
-### ⚙️ 7. Technologies back-end utilisées
+### ⚙️ 7. Technologies utilisées
 
 - Node.js (Express)
 - [JOI](https://www.npmjs.com/package/joi) pour la validation des champs
