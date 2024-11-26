@@ -10,7 +10,7 @@
 
 ### ⚙️ 1. Architecture
 
-- Mise en place d'un serveur stateless en Express avec une API REST CRUD.
+- Mise en place d'un serveur stateless Node.js en Express avec une API REST CRUD.
 - Les routes API utilisent des middlewares pour effectuer les vérifications, puis s'appuient sur des controllers qui gèrent la logique métier, interagissent avec des data mappers pour accéder à la base de données et renvoient une réponse au format JSON.
 
 ### 🔒 2. Sécurité
