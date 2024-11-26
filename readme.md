@@ -1,65 +1,56 @@
-# Develup
+# 🌟 Projet Develup
 
-## C'est quoi ?
+**Develup est une application web réalisée dans le cadre de mon portfolio, qui permet de faire collaborer des développeurs sur des projets web. Les utilisateur pourront poster des projets, rechercher des projets selon des technologies et un rythme de travail, et communiquer en temps réel.**
 
-**Develup** est une application web, conçue pour permettre aux developpeurs, et toute personne interresée par le métier de développeur, de collaborer sur des projets web.
+**Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
-L'application permet de poster des projets dans le but de trouver des personnes pour le réaliser à plusieurs, et, il permet aussi de facon réciproque d'en chercher. Un système de filtre par technologie (Java, React, Docker, Postgres .... ) et par rythme (1 à 2h/semaine, 2 à 3h/semaine ...) a été implenté, car chacun/chacune n'a pas le même temps a consacrer.
+**Si vous souhaitez en savoir plus sur le projet, connaitre les fonctionnalités générales, voir à quoi il ressemble ou bien le tester [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
-### Fonctionnalitées de l'application :
+## 🛠️ Fonctionnement du back-end :
 
-- Créer un compte utilisateur
-- Se connecter
-- Demander à réinitialiser son mot de passe (mot de passe oublié)
-- Rechercher un projet selon ses technologies et son rythme
-- Accéder au détails d'un projet
-- Accéder à la page profil utilisateur
-- Ajouter / Supprimer / modifier un projet
-- Modifier son profil
-- Modifier son mot de passe
-- Supprimer son compte
-- Communiquer en temps réel avec un utilisateur
-- Changer de thème (clair / sombre)
+### ⚙️ 1. Architecture
 
-## Pourquoi j'ai créé Develup ?
+- Mise en place d'un serveur stateless en Express avec une API REST CRUD.
+- Les routes API utilisent des middlewares pour effectuer les vérifications, puis s'appuient sur des controllers qui gèrent la logique métier, interagissent avec des data mappers pour accéder à la base de données et renvoient une réponse au format JSON.
 
-J'ai pour objectif de construire plusieurs projets qui ont du sens, destinés à enrichir mon portfolio et Develup est le premier que j'ai réalisé en totale autonomie.
+### 🔒 2. Sécurité
 
-## Comment fonctionne le back-end de l'application ?
+- Utilisation d'un Json Web Token dans les cookie pour géeer la session utilisateur.
+- Mise en place d'un middleware JWT qui vérifie la présence de ce dernier,sa validité et sa date d'expiration avant de le lire et d'extraire l'id de l'utilisateur afin de le rendre accessible au reste de la requete.
+- Utilisation d'un CSRF token en complément du JWT pour les actions les plus sensibles.
+- Mise en place d'un middleware CSRF avec une double vérification du token, à la fois dans les headers de la requête et dans les cookies.
+- Requêtes SQL préparées pour se prémunir des injections SQL.
+- Schéma de validation de formulaire avec JOI.
+- Hashage du mot de passe avec Argon2.
+- Utilisation de uuid pour générer des id complexes.
+- Paramètres CORS stricte.
+- Inscription par 2FA avec envoi d'un code OTP par mail.
+- Vérification intra-controller de l'utilisateur pour certaines actions sensibles ( _Par exmple quand un utilisateur supprime un projet on va utiliser l'id retoruné par le JWT pour voir si l'utilisateur qui souhaite supprimer le projet en est l'auteur_ ).
 
-Sur ce repo, vous trouverez toute la partie back réalisé en Node.js.
+### ❌ 3. Gestion d'erreurs
 
-Pour cela j'ai mis en place un serveur stateless en Express avec une API Rest et une authentification via JWT.
+- Utilisation d'une classe personnalisée "ApiError" qui étend de la class "Error" par défaut et qui comprend un message d'erreur ainsi qu'un code status.
+- Mise en place d'un middleware TryCatch qui englobe tous mes controllers afin de capturer l'erreur.
+- Mise en place d'un middleware de gestion d'erreurs qui réceptionne l'erreur du middleware TryCatch ou des autres middleware, regarde si l'erreur provient de ma class ApiError et si c'est le cas renvoie le message au front, sinon un message généraliste est envoyé, ce dans le but de ne pas afficher de message compromettant au client.
 
-Les routes utilisent des controllers qui utilisent eux même des datamappers avant de renvoyer une reponse JSON.
+### 🖼️ 3. Gestion d'images
 
-Pour la partie privée de mon application, donc les routes qui nécessitent une authentification, j'utilise un middleware JWT qui regarde si l'utilisateur est connecté en c'est à dire s'il possede un token, ensuite le middleware lit le token (est-il falsifié, est-il encore valable) et extrait l'id de l'utilisateur afin de le rendre accessible au reste de la requête. Pour les actions sensibles un token CSRF a été mis en place qui vérifie le token à la fois dans les headers de la requête mais aussi dans les cookies.
+- Utilisation de multer pour lire les données au format multipart/form-data et vérifie la validité de l'image selon une taille maximale et certains types de fichier
+- Utilisation de cloudinary pour stocker l'image et générer une URL qui sera stocké dans ma base de données
 
-Concernant les champs, une vérification est faite à l'aide de JOI afin de respecter les standards de mon application mais aussi celle de ma base de données Postgres
+### 💬 4. Web Socket
 
-La gestion d'erreur a été réalisée grâce à :
+- Utilisation de Socket.io pour mettre en place un tchat en temp réel.
+- Chaque conversation relie deux utilisateurs (l'auteur et celui interéssé) à un projet.
+- Pour sécurisé cela, des qu'on arrive sur la page conversation on vient rendre au client toute les conversations qu'il possède grâçe à l'id de son jwt, et dès qu'il clique sur une conversation pour afficher les messages, on regarde si l'utilisateur en plus d'être connecté, est dans cette conversation, sinon on génère une erreur généraliste, cela garantie que seul ceux qui sont dans cette conversation ont accès aux messages de cette dernière.
 
-- Une classe personnalisée "ApiError" qui étend de la class "Error" par défaut et qui comprend un message d'erreur ainsi qu'un code status.
-- Un middleware TryCatch qui englobe tous mes controllers afin de capturer l'erreur.
-- Un middleware des gestion d'erreur qui réceptionne l'erreur du middleware TryCatch, regarde si l'erreur provient de ma class ApiError et si c'est le cas renvoie le message au front, sinon un message généraliste est envoyé, ce dans le but de ne pas afficher de message compromettant au client.
+### 🗄️ 5. Base de données
 
-Pour la partie inscription, une authentification 2FA à été réalisée, avec l'envoie d'un code OTP par mail. Pour se faire j'ai utilisé redis et le jwt :
+- Utilisation d'une base de données relationnelle Postgres sous cette forme
+- Script de seeding pour stocker le nom et l'image associé à une technologie / langage
+- Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
 
-Lors de la validation du formulaire d'inscription, on stocke toutes ces infos dans redis, en faisant correspondre un id généré par uuid a ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur (si le code OTP est bon). Cela permet de ne pas mettre de données sensibles dans le jwt.
-
-Bien evidemment le mot de passe avant d'être inséré en base de données, et même avant d'être stocké dans Redis, est hashé grâce à Argon pour une meilleure sécurité.
-
-Pour l'instant l'utilisation de Redis dans mon application se limite à cela, mais sera vouée à évoluer.
-
-L'utilisateur lors de l'ajout / modification d'un projet ou de son profil peut ajouter une photo, et cette dernière est gérée avec Multer qui "traduit" les données au format "multipart/formdata", regarde si l'image correspond au bon type de fichier et ne dépasse pas une certaine taille, puis passe le relai à Cloudinary qui stocke l'image et génère une URL que l'on stocke en base de donnés.
-
-Enfin une communication en temps réel est possible grâce au websoket (socket.io) afin de permettre au utilisateurs d"échanger en temps réel sur un projet. Chaque conversation relie un deux utilisateurs (l'auteur et celui interéssé) à un projet. Pour sécurisé cela, des qu'on arrive sur la page conversation on vient rendre au client toute les conversations qu'il possède grâçe à l'id de son jwt, et dès qu'il clique sur une conversation pour afficher les messages, on regarde si l'utilisateur en plus d'être connecté, est dans cette conversation, sinon on génère une erreur généraliste, cela garantie que seul ceux qui sont dans cette conversation ont accès aux messages de cette dernière.
-
-Ce repos qui est en réalité un mono-repo contient toute la partie back en plus du front qui a été build, et servi statiquement dans le dossier public. Pour voir le code du repo front [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front).
-
-## Pour résumer :
-
-Voici la liste des technologies utilisées sur la partie back de ce repo :
+### ⚙️ 6. Technologies back-end utilisées
 
 - Node.js (Express)
 - [JOI](https://www.npmjs.com/package/joi) pour la validation des champs
@@ -75,3 +66,10 @@ Voici la liste des technologies utilisées sur la partie back de ce repo :
 - [Nodemailer](https://www.npmjs.com/package/nodemailer) pour l'envoie de mail
 - [OTP-generator](https://www.npmjs.com/package/otp-generator) pour générer un code OTP
 - [Slugify](https://www.npmjs.com/package/slugify) pour générer un slug unique
+
+### ⬇️ 7. Points à ajouter ou améliorer :
+
+- Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité
+- Mettre en place une pagination sur la page d'accueil
+- Se prémunir des attaques par force brute avec un captcha pour la connnexion
+- Migrer en TypeScript

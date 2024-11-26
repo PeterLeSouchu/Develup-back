@@ -13,6 +13,8 @@ import path from 'path';
 const app = express();
 
 const __dirname = path.resolve();
+
+// This repo is in reality a mono repo when we use the front-end code build named "dist" in public folder, so we use express.static to serve it
 app.use(express.static(path.join(__dirname, 'public/dist')));
 
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +47,7 @@ const io = new Server(server, {
   cookie: true,
 });
 
+// Socket middleware to verify jwt
 io.use((socket, next) => {
   console.log('middleware socket jwt');
   try {
@@ -67,6 +70,7 @@ io.use((socket, next) => {
   }
 });
 
+// Serveur Socket
 io.on('connection', (socket) => {
   console.log('client connected');
   socket.on('joinConversation', async (conversationId) => {
@@ -143,6 +147,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// We  catch all over route here in order to display front end route if the request is not for back-end route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/dist', 'index.html'));
 });
