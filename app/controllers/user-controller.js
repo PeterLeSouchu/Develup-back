@@ -16,10 +16,11 @@ const userController = {
   async sendOTP(req, res) {
     const { email, pseudo, password, passwordConfirm } = req.body;
 
+    const mailLowerCase = email.toLowerCase();
     // We use it to allow us to target the necessary information in Redis in the next method. Instead of using email, we use id to make our app more secure
     const id = uuidv4();
 
-    const userExist = await userDatamapper.findByEmail(email);
+    const userExist = await userDatamapper.findByEmail(mailLowerCase);
 
     if (userExist) {
       throw new ApiError(
@@ -65,7 +66,7 @@ const userController = {
       <p>Merci à vous et bonne visite!</p>
     `;
 
-    await sendMail(email, subject, mailMessage);
+    await sendMail(mailLowerCase, subject, mailMessage);
 
     res.cookie('jwt', token, {
       httpOnly: true,
@@ -102,8 +103,10 @@ const userController = {
 
     const type = 'Développeur';
 
+    const mailLowerCase = email.toLowerCase();
+
     const createdUser = await userDatamapper.save(
-      email,
+      mailLowerCase,
       passwordHashed,
       pseudo,
       slug,
@@ -127,7 +130,8 @@ const userController = {
   },
   async login(req, res) {
     const { email, password } = req.body;
-    const userExist = await userDatamapper.findByEmail(email);
+    const mailLowerCase = email.toLowerCase();
+    const userExist = await userDatamapper.findByEmail(mailLowerCase);
     if (!userExist) {
       throw new ApiError('Identifiants incorrects', 401);
     }
@@ -164,19 +168,19 @@ const userController = {
       secure: false,
       sameSite: 'Lax',
     });
-    // In local
-    res.clearCookie('psifi.x-csrf-token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    });
-
-    // In prod
-    // res.clearCookie('__Host-psifi.x-csrf-token', {
+    // // In local
+    // res.clearCookie('psifi.x-csrf-token', {
     //   httpOnly: true,
-    //   secure: true,
+    //   secure: false,
     //   sameSite: 'Lax',
     // });
+
+    // In prod
+    res.clearCookie('__Host-psifi.x-csrf-token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Lax',
+    });
     res.status(200).json({ message: 'Déconnexion réussie' });
   },
   async sendResetLink(req, res) {

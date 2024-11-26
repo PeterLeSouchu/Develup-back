@@ -68,7 +68,7 @@ const conversationController = {
 
     if (!isUserAllowed) {
       throw new ApiError(
-        'Une erreur innatendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
+        'Une erreur inattendue est survenue, essayez de vous reconnecter pour résoudre ce problème',
         403
       );
     }

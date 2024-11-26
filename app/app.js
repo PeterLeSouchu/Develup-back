@@ -8,13 +8,19 @@ import http from 'http';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import conversationDatamapper from './datamappers/conversation-datamapper.js';
+import path from 'path';
 
 const app = express();
+
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, 'public/dist')));
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    // origin: ['http://localhost:5173'],
+    origin: ['https://develup.up.railway.app'],
     credentials: true,
     withCredentials: true,
   })
@@ -50,14 +56,14 @@ io.use((socket, next) => {
       : null;
 
     if (!token) {
-      return socket.emit('error', 'Erreur innatendue, réessayez plus tard');
+      return socket.emit('error', 'Erreur inattendue, réessayez plus tard');
     }
 
     const user = jwt.verify(token, process.env.JWT_SECRET);
     socket.user = user;
     next();
   } catch (err) {
-    return socket.emit('error', 'Erreur innatendue, réessayez plus tard');
+    return socket.emit('error', 'Erreur inattendue, réessayez plus tard');
   }
 });
 
@@ -135,6 +141,10 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`Utilisateur déconnecté : ${socket.user.id}`);
   });
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/dist', 'index.html'));
 });
 
 server.listen(process.env.PORT, () => {

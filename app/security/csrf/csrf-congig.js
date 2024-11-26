@@ -2,10 +2,10 @@ import { doubleCsrf } from 'csrf-csrf';
 
 const doubleCsrfOptions = {
   getSecret: () => 'Secret', // A function that optionally takes the request and returns a secret
-  cookieName: 'psifi.x-csrf-token', // The name of the cookie to be used, recommend using Host prefix.
+  cookieName: '__HOST-psifi.x-csrf-token', // The name of the cookie to be used, recommend using Host prefix.
   cookieOptions: {
     sameSite: 'lax', // Recommend you make this strict if posible
-    secure: false, // If we make it true, we have to prefix the cookie with  : '__Host-'
+    secure: true, // If we make it true, we have to prefix the cookie with  : '__Host-'
     httpOnly: true,
   },
   getTokenFromRequest: (req) => {
