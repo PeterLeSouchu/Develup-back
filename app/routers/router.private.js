@@ -42,6 +42,10 @@ privateRouter.post(
 
 privateRouter.patch(
   '/api/project/:slug',
+  (req, res, next) => {
+    console.log('on est dans la route /api/project:/slug');
+    next();
+  },
   jwtMiddleware,
   csrfMiddleware,
   uploadMiddleware,

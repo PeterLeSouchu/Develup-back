@@ -169,7 +169,6 @@ const projectController = {
 
     if (title) {
       const newProjectSlug = await generateUniqueSlug(title, projectDatamapper);
-
       await projectDatamapper.editTitleProject(
         title,
         newProjectSlug,
@@ -226,6 +225,7 @@ const projectController = {
     }
 
     const editedProject = await projectDatamapper.findById(oldProject.id);
+
     return res.status(200).json({ message: 'all ok', result: editedProject });
   },
 };

@@ -7,6 +7,12 @@ const router = Router();
 // call when user is connected with useEffect in react
 router.get('/api/csrf-token', csrfTokenMethod);
 
+router.use((req, res, next) => {
+  console.log(req.originalUrl);
+  console.log(req.method);
+  next();
+});
+
 router.use(publicRouter);
 router.use(privateRouter);
 
