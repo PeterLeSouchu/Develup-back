@@ -49,7 +49,6 @@ const io = new Server(server, {
 
 // Socket middleware to verify jwt
 io.use((socket, next) => {
-  console.log('middleware socket jwt');
   try {
     const token = socket.handshake.headers.cookie
       ? socket.handshake.headers.cookie
@@ -72,7 +71,7 @@ io.use((socket, next) => {
 
 // Serveur Socket
 io.on('connection', (socket) => {
-  console.log('client connected');
+  console.log(`Utilisateur connecté : ${socket.user.id}`);
   socket.on('joinConversation', async (conversationId) => {
     try {
       const isAllowed =
