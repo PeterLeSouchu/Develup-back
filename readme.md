@@ -68,7 +68,11 @@
 
 ### ⬇️ 8. Points à ajouter ou améliorer :
 
-- Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité
-- Mettre en place une pagination sur la page d'accueil
-- Se prémunir des attaques par force brute avec un captcha pour la connnexion
-- Migrer en TypeScript
+- Se prémunir des attaques par force brute avec un captcha pour la connnexion.
+- Mettre en place une pagination sur la page d'accueil pour gagner en rapidité et ainsi améliorer l'expérience utilisateur.
+- Mettre en place des notifications en cas d'ajout / modification / suppression de projet ou de profil.
+- Mettre en place une "pillule rouge" afin de voir quand on a un nouveau message.
+- Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité.
+- Migrer en TypeScript.
+- Améliorer la gestion d'erreur des types de fichier lors de l'upload d'images. (Pour l'instant l'erreur est lancée mais si je la personnalise, le message d'erreur n'atteint jamais le front)
+- Améliorer la gestion d'erreur des web socket concernant la sessions expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
