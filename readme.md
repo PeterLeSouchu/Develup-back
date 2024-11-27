@@ -4,7 +4,7 @@
 
 **Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
-**Si vous souhaitez en savoir plus sur le projet, connaitre les fonctionnalités générales, voir à quoi il ressemble ou bien le tester [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
+**Si vous souhaitez en savoir plus sur le projet, connaitre les fonctionnalités générales, voir à quoi il ressemble ou bien le tester [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front) LIEN À VENIR**
 
 ## 🛠️ Fonctionnement du back-end :
 
