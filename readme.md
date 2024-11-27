@@ -23,7 +23,6 @@
 - Schéma de validation de formulaire avec JOI.
 - Hashage du mot de passe avec Argon2.
 - Utilisation de uuid pour générer des id complexes.
-- Paramètres CORS stricte.
 - Inscription par 2FA avec envoi d'un code OTP par mail.
 - Vérification intra-controller de l'utilisateur pour certaines actions sensibles ( _Par exmple quand un utilisateur supprime un projet on va utiliser l'id retoruné par le JWT pour voir si l'utilisateur qui souhaite supprimer le projet en est l'auteur_ ).
 

@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     // origin: ['http://localhost:5173'],
-    origin: ['https://develup.up.railway.app'],
+    // origin: ['https://develup.up.railway.app'],
     credentials: true,
     withCredentials: true,
   })
@@ -40,7 +40,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    // origin: 'http://localhost:5173',
     // methods: ['GET', 'POST'],
     credentials: true,
   },

@@ -70,7 +70,6 @@ privateRouter.post(
 privateRouter.get(
   '/api/personal-projects',
   jwtMiddleware,
-  csrfMiddleware,
   tryCatchMiddleware(projectController.personalProjects)
 );
 
@@ -123,14 +122,12 @@ privateRouter.post(
 privateRouter.get(
   '/api/conversations',
   jwtMiddleware,
-  csrfMiddleware,
   tryCatchMiddleware(conversationController.getAllConversations)
 );
 
 privateRouter.get(
   '/api/conversation/:id',
   jwtMiddleware,
-  csrfMiddleware,
   tryCatchMiddleware(conversationController.getOneConversation)
 );
 
