@@ -75,4 +75,4 @@
 - Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité.
 - Migrer en TypeScript.
 - Améliorer la gestion d'erreur des types de fichier lors de l'upload d'images. (Pour l'instant l'erreur est lancée mais si je la personnalise, le message d'erreur n'atteint jamais le front)
-- Améliorer la gestion d'erreur des web socket concernant la sessions expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
+- Améliorer la sécurité et la gestion d'erreurs des web socket concernant la session expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
