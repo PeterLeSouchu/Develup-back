@@ -49,7 +49,7 @@
 - Script de seeding pour stocker le nom et l'image associé à une technologie / langage
 - Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
 
-### ⚙️ 7. Technologies utilisées
+### 💻 7. Technologies utilisées
 
 - Node.js (Express)
 - [JOI](https://www.npmjs.com/package/joi) pour la validation des champs
