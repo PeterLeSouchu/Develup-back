@@ -49,7 +49,7 @@
 - Script de seeding pour stocker le nom et l'image associé à une technologie / langage
 - Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
 
-### ⚙️ 7. Technologies utilisées
+### 💻 7. Technologies utilisées
 
 - Node.js (Express)
 - [JOI](https://www.npmjs.com/package/joi) pour la validation des champs
@@ -68,7 +68,11 @@
 
 ### ⬇️ 8. Points à ajouter ou améliorer :
 
-- Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité
-- Mettre en place une pagination sur la page d'accueil
-- Se prémunir des attaques par force brute avec un captcha pour la connnexion
-- Migrer en TypeScript
+- Se prémunir des attaques par force brute avec un captcha pour la connnexion.
+- Mettre en place une pagination sur la page d'accueil pour gagner en rapidité et ainsi améliorer l'expérience utilisateur.
+- Mettre en place des notifications en cas d'ajout / modification / suppression de projet ou de profil.
+- Mettre en place une "pillule rouge" afin de voir quand on a un nouveau message.
+- Utilisation plus prononcé de redis pour soulager la base de données et avoir une meilleure fluidité.
+- Migrer en TypeScript.
+- Améliorer la gestion d'erreur des types de fichier lors de l'upload d'images. (Pour l'instant l'erreur est lancée mais si je la personnalise, le message d'erreur n'atteint jamais le front)
+- Améliorer la sécurité et la gestion d'erreurs des web socket concernant la session expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
