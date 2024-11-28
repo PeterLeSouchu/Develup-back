@@ -29,7 +29,7 @@
 
 ### 🔒 2. Sécurité
 
-- Utilisation d'un Json Web Token dans les cookie pour géeer la session utilisateur.
+- Utilisation d'un Json Web Token dans les cookie pour gérer la session utilisateur.
 - Mise en place d'un middleware JWT qui vérifie la présence de ce dernier,sa validité et sa date d'expiration avant de le lire et d'extraire l'id de l'utilisateur afin de le rendre accessible au reste de la requete.
 - Utilisation d'un CSRF token en complément du JWT pour les actions les plus sensibles.
 - Mise en place d'un middleware CSRF avec une double vérification du token, à la fois dans les headers de la requête et dans les cookies.
