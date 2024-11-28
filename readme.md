@@ -1,10 +1,24 @@
-# 🌟 Projet Develup
+# 🌟 [Projet Develup](https://develup.up.railway.app)
 
-**Develup est une application web réalisée dans le cadre de mon portfolio, qui permet de faire collaborer des développeurs sur des projets web. Les utilisateur pourront poster des projets, rechercher des projets selon des technologies et un rythme de travail, et communiquer en temps réel.**
+**Develup est une application web réalisée dans le cadre de mon portfolio, qui permet de faire collaborer des développeurs, ou toute personne intéressée par le monde du dev, sur des projets web. Les utilisateurs pourront poster des projets, rechercher des projets selon des technologies et un rythme de travail, et communiquer en temps réel. L’objectif de Develup est de vous aider à progresser, et quoi de mieux que de le faire en équipe.**
 
-**Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
+## ⭐ Fonctionnalitées de l'application :
 
-**Si vous souhaitez en savoir plus sur le projet, connaitre les fonctionnalités générales, voir à quoi il ressemble ou bien le tester [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front) LIEN À VENIR**
+- Créer un compte utilisateur
+- Se connecter
+- Demander à réinitialiser son mot de passe (mot de passe oublié)
+- Rechercher un projet selon ses technologies et son rythme de travail
+- Accéder à la page détail d'un projet
+- Accéder à la page détail d'un utilisateur
+- Ajouter / Supprimer / modifier un projet
+- Modifier son profil
+- Modifier son mot de passe
+- Supprimer son compte
+- Communiquer en temps réel avec un utilisateur
+- Changer de thème (clair / sombre)
+
+
+**Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique du front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
 ## 🛠️ Fonctionnement du back-end :
 
