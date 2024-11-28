@@ -1,10 +1,25 @@
-# 🌟 Projet Develup
+# 🌟 [Projet Develup](https://develup.up.railway.app)
 
-**Develup est une application web réalisée dans le cadre de mon portfolio, qui permet de faire collaborer des développeurs sur des projets web. Les utilisateur pourront poster des projets, rechercher des projets selon des technologies et un rythme de travail, et communiquer en temps réel.**
+**Develup est une application web réalisée dans le cadre de mon portfolio, qui permet de faire collaborer des développeurs, ou toute personne intéressée par le monde du dev, sur des projets web. Les utilisateurs pourront poster des projets, rechercher des projets selon des technologies et un rythme de travail, et communiquer en temps réel. L’objectif de Develup est de vous aider à progresser, et quoi de mieux que de le faire en équipe.**
 
-**Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
-**Si vous souhaitez en savoir plus sur le projet, connaitre les fonctionnalités générales, voir à quoi il ressemble ou bien le tester [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front) LIEN À VENIR**
+## ⭐ Fonctionnalitées de l'application :
+
+- Créer un compte utilisateur
+- Se connecter
+- Demander à réinitialiser son mot de passe (mot de passe oublié)
+- Rechercher un projet selon ses technologies et son rythme de travail
+- Accéder à la page détail d'un projet
+- Accéder à la page détail d'un utilisateur
+- Ajouter / Supprimer / modifier un projet
+- Modifier son profil
+- Modifier son mot de passe
+- Supprimer son compte
+- Communiquer en temps réel avec un utilisateur
+- Changer de thème (clair / sombre)
+
+
+**Ce repo contient le code back-end de Develup et est dédié à la partie technique de ses fonctionnalités, si vous souhaitez voir la partie technique du front-end [cliquez-ici](https://github.com/PeterLeSouchu/Develup-front)**
 
 ## 🛠️ Fonctionnement du back-end :
 
@@ -15,7 +30,7 @@
 
 ### 🔒 2. Sécurité
 
-- Utilisation d'un Json Web Token dans les cookie pour géeer la session utilisateur.
+- Utilisation d'un Json Web Token dans les cookie pour gérer la session utilisateur.
 - Mise en place d'un middleware JWT qui vérifie la présence de ce dernier,sa validité et sa date d'expiration avant de le lire et d'extraire l'id de l'utilisateur afin de le rendre accessible au reste de la requete.
 - Utilisation d'un CSRF token en complément du JWT pour les actions les plus sensibles.
 - Mise en place d'un middleware CSRF avec une double vérification du token, à la fois dans les headers de la requête et dans les cookies.
@@ -45,7 +60,7 @@
 
 ### 🗄️ 6. Bases de données
 
-- Utilisation d'une base de données relationnelle Postgres sous cette forme
+- Utilisation d'une base de données relationnelle Postgres 
 - Script de seeding pour stocker le nom et l'image associé à une technologie / langage
 - Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
 
@@ -76,3 +91,6 @@
 - Migrer en TypeScript.
 - Améliorer la gestion d'erreur des types de fichier lors de l'upload d'images. (Pour l'instant l'erreur est lancée mais si je la personnalise, le message d'erreur n'atteint jamais le front)
 - Améliorer la sécurité et la gestion d'erreurs des web socket concernant la session expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
+
+
+🚨 : Ce repo est en réalité un mono-repo et contient le front qui a été build, ce dossier build se trouve dans le dossier public à la racine de mon projet et est servi statiquement grâce à Express, cela permet de n'avoir qu'un seul repos à héberger. 
