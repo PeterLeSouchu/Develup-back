@@ -90,3 +90,6 @@
 - Migrer en TypeScript.
 - Améliorer la gestion d'erreur des types de fichier lors de l'upload d'images. (Pour l'instant l'erreur est lancée mais si je la personnalise, le message d'erreur n'atteint jamais le front)
 - Améliorer la sécurité et la gestion d'erreurs des web socket concernant la session expirée. (Pour l'instant, l'utilisateur peut envoyer des messages quand la session a expiré)
+
+
+🚨 : Ce repo est en réalité un mono-repo et contient le front qui a été build, ce dossier build se trouve dans le dossier public à la racine de mon projet et est servi statiquement grâce à Express, cela permet de n'avoir qu'un seul repos à héberger. 
