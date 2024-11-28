@@ -42,7 +42,7 @@
 - Hashage du mot de passe avec Argon2.
 - Utilisation de uuid pour générer des id complexes.
 - Inscription par 2FA avec envoi d'un code OTP par mail.
-- Vérification intra-controller de l'utilisateur pour certaines actions sensibles ( _Par exmple quand un utilisateur supprime un projet on va utiliser l'id retoruné par le JWT pour voir si l'utilisateur qui souhaite supprimer le projet en est l'auteur_ ).
+- Vérification intra-controller de l'utilisateur pour certaines actions sensibles ( _Par exemple quand un utilisateur supprime un projet on va utiliser l'id retourné par le JWT pour voir si l'utilisateur qui souhaite supprimer le projet en est l'auteur_ ).
 
 ### ❌ 3. Gestion d'erreurs
 
@@ -76,7 +76,7 @@
 - [Redis](https://www.npmjs.com/package/ioredis) pour l'inscription 2FA
 - [Postgres](https://www.npmjs.com/package/pg) pour la base de données
 - [Socket.io](https://www.npmjs.com/package/socket.io) pour la communication en temps réel
-- [Json Web Token](https://www.npmjs.com/package/jsonwebtoken) pour l'authentification
+- [Json Web Token](https://www.npmjs.com/package/jsonwebtoken) pour l'authentification et la session
 - [Multer](https://www.npmjs.com/package/multer) pour lire et gérer les fichiers images
 - [Cloudinary](https://www.npmjs.com/package/cloudinary) pour stocker l'image
 - [CSRF-CSRF](https://www.npmjs.com/package/csrf-csrf), le package utilsé pour se prémunir des attaques CSRF
