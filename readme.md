@@ -54,8 +54,8 @@ L'application est accessible à l'adresse suivante: https://develup.up.railway.a
 
 ### 🖼️ 4. Gestion d'images
 
-- Utilisation de multer pour lire les données au format multipart/form-data et vérifie la validité de l'image selon une taille maximale et certains types de fichier
-- Utilisation de cloudinary pour stocker l'image et générer une URL qui sera stocké dans ma base de données
+- Utilisation de multer pour lire les données au format multipart/form-data et vérifie la validité de l'image selon une taille maximale et certains types de fichier.
+- Utilisation de cloudinary pour stocker l'image et générer une URL qui sera stocké dans ma base de données.
 
 ### 💬 5. Web Socket
 
