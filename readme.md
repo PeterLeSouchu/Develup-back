@@ -54,8 +54,8 @@ L'application est accessible à l'adresse suivante: https://develup.up.railway.a
 
 ### 🖼️ 4. Gestion d'images
 
-- Utilisation de multer pour lire les données au format multipart/form-data et vérifie la validité de l'image selon une taille maximale et certains types de fichier
-- Utilisation de cloudinary pour stocker l'image et générer une URL qui sera stocké dans ma base de données
+- Utilisation de multer pour lire les données au format multipart/form-data et vérifie la validité de l'image selon une taille maximale et certains types de fichier.
+- Utilisation de cloudinary pour stocker l'image et générer une URL qui sera stocké dans ma base de données.
 
 ### 💬 5. Web Socket
 
@@ -65,9 +65,9 @@ L'application est accessible à l'adresse suivante: https://develup.up.railway.a
 
 ### 🗄️ 6. Bases de données
 
-- Utilisation d'une base de données relationnelle Postgres 
-- Script de seeding pour stocker le nom et l'image associé à une technologie / langage
-- Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ )
+- Utilisation d'une base de données relationnelle Postgres.
+- Script de seeding pour stocker le nom et l'image associé à une technologie / langage avec l'API : "https://svgl.app/api".
+- Utilisation d'une base de données en mémoire Redis pour l'inscription par 2FA ( _Lors de la validation du formulaire d'inscription, on stocke temporairement toutes ces infos dans Redis, en faisant correspondre un id généré par uuid à ces infos. Cet identifiant uuid est stocké dans le jwt et envoyé au front. Suite à cela, une fois que le client valide le code OTP, on récupère l'id du jwt pour lire les données de Redis et enregistrer l'utilisateur._ ).
 
 ### 💻 7. Technologies utilisées
 
