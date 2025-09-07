@@ -21,8 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    // origin: ['http://localhost:5173'],
-    origin: ['https://develup.up.railway.app'],
+    origin: ['http://localhost:5173'],
+    // origin: ['https://develup.up.railway.app'],
     credentials: true,
     withCredentials: true,
   })
@@ -147,9 +147,9 @@ io.on('connection', (socket) => {
 });
 
 // We  catch all over route here in order to display front end route if the request is not for back-end route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public/dist', 'index.html'));
+// });
 
 server.listen(process.env.PORT, () => {
   console.log(`App listening on ${process.env.HOST}`);
