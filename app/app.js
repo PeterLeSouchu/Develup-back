@@ -14,7 +14,7 @@ const app = express();
 
 const __dirname = path.resolve();
 
-// This repo is in reality a mono repo when we use the front-end code build named "dist" in public folder, so we use express.static to serve it
+// This repo is in reality a mono repo when we use the front-end code build named "dist" in public folder, so we use express.static to serve it.
 app.use(express.static(path.join(__dirname, "public/dist")));
 
 app.use(express.urlencoded({ extended: true }));
