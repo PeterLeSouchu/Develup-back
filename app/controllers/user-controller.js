@@ -208,9 +208,8 @@ const userController = {
        <p>Merci à vous et bonne visite!</p>
        `;
 
-    console.log("on est avant l'envoi d'email pour le reset password");
     await sendMail(email, subject, mailMessage);
-    console.log("on est après l'envoi d'email pour le reset password");
+
     res
       .status(200)
       .json({ message: "Lien de réinitialisation du mot de passe envoyé" });
