@@ -11,7 +11,6 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-// En prod railway bloque ces port, i lfaut passer par Resend par exmple !!!!!!!!!!!!
 export async function sendMail(email, subject, message) {
   await transporter.sendMail({
     from: {
