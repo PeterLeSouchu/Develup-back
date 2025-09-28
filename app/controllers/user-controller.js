@@ -13,12 +13,74 @@ import technologieDatamapper from "../datamappers/technologie-datamapper.js";
 import projectDatamapper from "../datamappers/project-datamapper.js";
 
 const userController = {
-  async sendOTP(req, res) {
+  // async sendOTP(req, res) {
+  //   const { email, pseudo, password, passwordConfirm } = req.body;
+
+  //   const mailLowerCase = email.toLowerCase();
+  //   // We use it to allow us to target the necessary information in Redis in the next method. Instead of using email, we use id to make our app more secure
+  //   const id = uuidv4();
+
+  //   const userExist = await userDatamapper.findByEmail(mailLowerCase);
+
+  //   if (userExist) {
+  //     throw new ApiError(
+  //       "Cet e-mail est déjà associé à un compte existant.",
+  //       409
+  //     );
+  //   }
+
+  //   if (password !== passwordConfirm) {
+  //     throw new ApiError("Les mots de passe ne correspondent pas", 400);
+  //   }
+
+  //   const slug = await generateUniqueSlug(pseudo, userDatamapper);
+  //   const passwordHashed = await hashPassword(password);
+
+  //   const OTPcode = otpGenerator.generate(6, {
+  //     digits: true,
+  //     lowerCaseAlphabets: false,
+  //     upperCaseAlphabets: false,
+  //     specialChars: false,
+  //   });
+
+  //   const userData = {
+  //     email,
+  //     pseudo,
+  //     passwordHashed,
+  //     slug,
+  //     OTPcode,
+  //   };
+
+  //   await redis.set(`otp:${id}`, JSON.stringify(userData), "EX", 900);
+
+  //   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+  //     expiresIn: "15m",
+  //   });
+
+  //   const subject = "OTP Code";
+
+  //   const mailMessage = `<h1> Develup </h1>
+  //     <p>Bonjour ${pseudo},</p>
+  //     <p>Nous vous souhaitons la bienvenue sur Develup! </p>
+  //     <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span style="font-size: 1.5em; font-weight: bold; color: #4A90E2;"> ${OTPcode}</span></p>
+  //     <p>Merci à vous et bonne visite!</p>
+  //   `;
+
+  //   await sendMail(mailLowerCase, subject, mailMessage);
+
+  //   res.cookie("jwt", token, {
+  //     httpOnly: true,
+  //     secure: false,
+  //     sameSite: "Lax",
+  //     maxAge: 900000, // 15min
+  //   });
+
+  //   res.status(200).json({ message: "code OTP envoyé" });
+  // },
+  async registerUser(req, res) {
     const { email, pseudo, password, passwordConfirm } = req.body;
 
     const mailLowerCase = email.toLowerCase();
-    // We use it to allow us to target the necessary information in Redis in the next method. Instead of using email, we use id to make our app more secure
-    const id = uuidv4();
 
     const userExist = await userDatamapper.findByEmail(mailLowerCase);
 
@@ -36,74 +98,7 @@ const userController = {
     const slug = await generateUniqueSlug(pseudo, userDatamapper);
     const passwordHashed = await hashPassword(password);
 
-    const OTPcode = otpGenerator.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-
-    const userData = {
-      email,
-      pseudo,
-      passwordHashed,
-      slug,
-      OTPcode,
-    };
-
-    await redis.set(`otp:${id}`, JSON.stringify(userData), "EX", 900);
-
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
-
-    const subject = "OTP Code";
-
-    const mailMessage = `<h1> Develup </h1>
-      <p>Bonjour ${pseudo},</p>
-      <p>Nous vous souhaitons la bienvenue sur Develup! </p>
-      <p>Pour valider votre inscription, veuillez renseignez ce code sur notre site: <span style="font-size: 1.5em; font-weight: bold; color: #4A90E2;"> ${OTPcode}</span></p>
-      <p>Merci à vous et bonne visite!</p>
-    `;
-
-    await sendMail(mailLowerCase, subject, mailMessage);
-
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 900000, // 15min
-    });
-
-    res.status(200).json({ message: "code OTP envoyé" });
-  },
-  async registerUser(req, res) {
-    const { userOTPcode } = req.body;
-
-    const id = req.user.id;
-
-    const redisDataUser = await redis.get(`otp:${id}`);
-    if (!redisDataUser) {
-      throw new ApiError(
-        "Le code OTP n'est plus valide, remplissez de nouveau le formulaire d'inscription pour recevoir un nouveau code OTP",
-        400
-      );
-    }
-
-    const { email, pseudo, passwordHashed, slug, OTPcode } =
-      JSON.parse(redisDataUser);
-
-    if (userOTPcode.length < 6) {
-      throw new ApiError("Le code OTP doit contenir 6 caractères", 400);
-    }
-
-    if (OTPcode !== userOTPcode) {
-      throw new ApiError("Code OTP invalide", 400);
-    }
-
     const type = "Développeur";
-
-    const mailLowerCase = email.toLowerCase();
 
     const createdUser = await userDatamapper.save(
       mailLowerCase,
@@ -124,10 +119,60 @@ const userController = {
       maxAge: 3600000, // 1 heure
     });
 
-    await redis.del(`otp:${id}`);
-
     res.json({ message: "Utilisateur créé" });
   },
+  // async registerUser(req, res) {
+  //   const { userOTPcode } = req.body;
+
+  //   const id = req.user.id;
+
+  //   const redisDataUser = await redis.get(`otp:${id}`);
+  //   if (!redisDataUser) {
+  //     throw new ApiError(
+  //       "Le code OTP n'est plus valide, remplissez de nouveau le formulaire d'inscription pour recevoir un nouveau code OTP",
+  //       400
+  //     );
+  //   }
+
+  //   const { email, pseudo, passwordHashed, slug, OTPcode } =
+  //     JSON.parse(redisDataUser);
+
+  //   if (userOTPcode.length < 6) {
+  //     throw new ApiError("Le code OTP doit contenir 6 caractères", 400);
+  //   }
+
+  //   if (OTPcode !== userOTPcode) {
+  //     throw new ApiError("Code OTP invalide", 400);
+  //   }
+
+  //   const type = "Développeur";
+
+  //   const mailLowerCase = email.toLowerCase();
+
+  //   const createdUser = await userDatamapper.save(
+  //     mailLowerCase,
+  //     passwordHashed,
+  //     pseudo,
+  //     slug,
+  //     type
+  //   );
+
+  //   const userToken = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
+  //     expiresIn: "1h",
+  //   });
+
+  //   res.cookie("jwt", userToken, {
+  //     httpOnly: true,
+  //     secure: false,
+  //     sameSite: "Lax",
+  //     maxAge: 3600000, // 1 heure
+  //   });
+
+  //   await redis.del(`otp:${id}`);
+
+  //   res.json({ message: "Utilisateur créé" });
+  // },
+
   async login(req, res) {
     const { email, password } = req.body;
     const mailLowerCase = email.toLowerCase();
